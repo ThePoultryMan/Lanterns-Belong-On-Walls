@@ -1,28 +1,28 @@
 {
     "schemaVersion": 1,
-    "id": "modid",
+    "id": "walllanterns",
     "version": "0.1.0",
 
-    "name": "Mod Name",
-    "description": "This mod is a template for other mods.",
+    "name": "Lanterns Belong on Walls",
+    "description": "Lanterns Belong on Walls allows the placing of lanterns on walls.",
     "authors": [
         "ThePoultryMan"
     ],
     "contact": {
-        "sources": "https://github.com/ThePoultryMan/Mod-Template"
+        "sources": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"
     },
 
     "license": "CC0-1.0",
-    "icon": "assets/modid/icon.png",
+    "icon": "assets/walllanterns/icon.png",
 
     "environment": "*",
     "entrypoints": {
         "main": [
-            "thepoultryman.modid.ModClass"
+            "thepoultryman.walllanterns.WallLanterns"
         ]
     },
     "mixins": [
-        "modid.mixins.json"
+        "walllanterns.mixins.json"
     ],
 
     "depends": {
