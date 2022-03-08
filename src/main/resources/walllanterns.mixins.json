@@ -4,8 +4,6 @@
   "package": "thepoultryman.walllanterns.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  ],
-  "client": [
     "WallLanternsMixin"
   ],
   "injectors": {
