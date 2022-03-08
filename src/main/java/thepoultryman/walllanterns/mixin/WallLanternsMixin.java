@@ -1,16 +1,65 @@
 package thepoultryman.walllanterns.mixin;
 
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.block.*;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import thepoultryman.walllanterns.WallLanterns;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(TitleScreen.class)
-public class WallLanternsMixin {
-	@Inject(at = @At("HEAD"), method = "init()V")
-	private void init(CallbackInfo info) {
-		WallLanterns.LOGGER.info("This line is printed by an example mod mixin!");
-	}
+@Mixin(LanternBlock.class)
+public abstract class WallLanternsMixin extends Block {
+    private static final BooleanProperty ON_WALL = BooleanProperty.of("on_wall");
+
+    @Shadow @Final public static BooleanProperty HANGING;
+
+    @Shadow @Final public static BooleanProperty WATERLOGGED;
+
+    public WallLanternsMixin(Settings settings) {
+        super(settings);
+    }
+
+    @Inject(at = @At("TAIL"), method = "<init>")
+    private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
+        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.NORTH).with(ON_WALL, false));
+    }
+
+    @Inject(at = @At("TAIL"), method = "appendProperties")
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
+        builder.add(Properties.HORIZONTAL_FACING, ON_WALL);
+    }
+
+    @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
+    public void appendProperties(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(true);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockPos.Mutable blockPos = ctx.getBlockPos().mutableCopy();
+
+        for (Direction direction : ctx.getPlacementDirections()) {
+            if (direction.getAxis() == Direction.Axis.Y) {
+                return this.getDefaultState().with(HANGING, direction == Direction.UP)
+                        .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                        .with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite())
+                        .with(ON_WALL, ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() - 1)).getBlock() == Blocks.AIR &&
+                                ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() + 2)).getBlock() == Blocks.AIR);
+            }
+        }
+
+        return null;
+    }
 }
