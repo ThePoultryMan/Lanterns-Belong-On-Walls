@@ -1,11 +1,11 @@
 {
     "variants": {
-        "hanging=true,on_wall=true,facing=north": { "model": "walllanterns:block/wall_lantern", "uvlock": true },
+        "hanging=true,on_wall=true,facing=north": { "model": "walllanterns:block/wall_lantern" },
         "hanging=true,on_wall=true,facing=east": { "model": "walllanterns:block/wall_lantern",
-            "y": 90, "uvlock": true },
+            "y": 90 },
         "hanging=true,on_wall=true,facing=south": { "model": "walllanterns:block/wall_lantern",
-            "y": 180, "uvlock": true },
+            "y": 180 },
         "hanging=true,on_wall=true,facing=west": { "model": "walllanterns:block/wall_lantern",
-            "y": 270, "uvlock": true }
+            "y": 270 }
     }
 }
