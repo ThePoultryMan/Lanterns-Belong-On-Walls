@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "hanging=true,on_wall=true,facing=north": { "model": "walllanterns:block/wall_soul_lantern", "uvlock": true },
+        "hanging=true,on_wall=true,facing=east": { "model": "walllanterns:block/wall_soul_lantern",
+            "y": 90, "uvlock": true },
+        "hanging=true,on_wall=true,facing=south": { "model": "walllanterns:block/wall_soul_lantern",
+            "y": 180, "uvlock": true },
+        "hanging=true,on_wall=true,facing=west": { "model": "walllanterns:block/wall_soul_lantern",
+            "y": 270, "uvlock": true }
+    }
+}
