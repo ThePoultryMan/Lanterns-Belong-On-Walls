@@ -49,14 +49,22 @@ public abstract class WallLanternsMixin extends Block {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos.Mutable blockPos = ctx.getBlockPos().mutableCopy();
+        BlockState blockState;
+        Block upBlock = ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() + 1)).getBlock();
+        Block downBlock = ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() - 2)).getBlock();
 
         for (Direction direction : ctx.getPlacementDirections()) {
             if (direction.getAxis() == Direction.Axis.Y) {
-                return this.getDefaultState().with(HANGING, direction == Direction.UP)
-                        .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
-                        .with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite())
-                        .with(ON_WALL, ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() - 1)).getBlock() == Blocks.AIR &&
-                                ctx.getWorld().getBlockState(blockPos.setY(blockPos.getY() + 2)).getBlock() == Blocks.AIR);
+                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                        .with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite());
+
+                if (downBlock != Blocks.AIR) {
+                   return blockState.with(ON_WALL, false).with(HANGING, false);
+                } else if (upBlock != Blocks.AIR) {
+                    return blockState.with(ON_WALL, false).with(HANGING, true);
+                } else {
+                    return  blockState.with(ON_WALL, true).with(HANGING, true);
+                }
             }
         }
 
