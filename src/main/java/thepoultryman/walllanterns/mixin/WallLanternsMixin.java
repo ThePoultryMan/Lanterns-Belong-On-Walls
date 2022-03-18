@@ -41,7 +41,7 @@ public abstract class WallLanternsMixin extends Block {
     }
 
     @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
-    public void appendProperties(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(true);
     }
 
