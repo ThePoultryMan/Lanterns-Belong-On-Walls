@@ -6,8 +6,12 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -17,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import thepoultryman.walllanterns.WallLanterns;
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
@@ -27,9 +30,19 @@ public abstract class WallLanternsMixin extends Block {
 
     @Shadow @Final public static BooleanProperty WATERLOGGED;
 
+    @Shadow @Final protected static VoxelShape HANGING_SHAPE;
+
+    // Voxel Shapes
+    private static final VoxelShape ON_WALL_SHAPE_NORTH;
+    private static final VoxelShape ON_WALL_SHAPE_EAST;
+    private static final VoxelShape ON_WALL_SHAPE_SOUTH;
+    private static final VoxelShape ON_WALL_SHAPE_WEST;
+
     public WallLanternsMixin(Settings settings) {
         super(settings);
     }
+
+    // Blockstate Stuff
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
@@ -82,11 +95,35 @@ public abstract class WallLanternsMixin extends Block {
         return null;
     }
 
+    // Visuals
+
+    @Inject(at = @At("RETURN"), method = "getOutlineShape", cancellable = true)
+    public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+        if (state.get(ON_WALL)) {
+            cir.setReturnValue(switch(state.get(Properties.HORIZONTAL_FACING)) {
+                case NORTH -> ON_WALL_SHAPE_NORTH;
+                case EAST -> ON_WALL_SHAPE_EAST;
+                case SOUTH -> ON_WALL_SHAPE_SOUTH;
+                case WEST -> ON_WALL_SHAPE_WEST;
+                default -> HANGING_SHAPE;
+            });
+        }
+    }
+
+    // Methods
+
     private int getDirectionalInt(Direction direction) {
         return switch (direction) {
             case NORTH, WEST -> 1;
             case SOUTH, EAST -> -1;
             default -> 0;
         };
+    }
+
+    static {
+        ON_WALL_SHAPE_NORTH = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(6.9D, 8D, 6D, 9.1D, 15D, 16D), Block.createCuboidShape(6.9D, 8D, 6D, 9.1, 14D, 15D), BooleanBiFunction.ONLY_FIRST));
+        ON_WALL_SHAPE_EAST = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(0D, 8D, 6.9D, 10D, 15D, 9.1D), Block.createCuboidShape(1D, 8D, 6.9D, 10D, 14D, 9.1D), BooleanBiFunction.ONLY_FIRST));
+        ON_WALL_SHAPE_SOUTH = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(6.9D, 8D, 0D, 9.1D, 15D, 10D), Block.createCuboidShape(6.9D, 8D, 1D, 9.1D, 14D, 15D), BooleanBiFunction.ONLY_FIRST));
+        ON_WALL_SHAPE_WEST = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(6D, 8, 6.9D, 16D, 15D, 9.1D), Block.createCuboidShape(6D, 8D, 6.9D, 15D, 14D, 9.1D), BooleanBiFunction.ONLY_FIRST));
     }
 }
