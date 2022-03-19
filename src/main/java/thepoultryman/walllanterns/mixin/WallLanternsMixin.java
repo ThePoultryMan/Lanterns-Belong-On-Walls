@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import thepoultryman.walllanterns.WallLanterns;
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
@@ -42,7 +43,17 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(true);
+        boolean returnValue = false;
+        Direction direction = state.get(Properties.HORIZONTAL_FACING);
+
+        if (direction.getAxis() == Direction.Axis.Z)
+            if (world.getBlockState(pos.add(0, 0, getDirectionalInt(direction))).getBlock() != Blocks.AIR)
+                returnValue = true;
+        if (direction.getAxis() == Direction.Axis.X)
+            if (world.getBlockState(pos.add(getDirectionalInt(direction), 0, 0)).getBlock() != Blocks.AIR)
+                returnValue = true;
+
+        cir.setReturnValue(returnValue);
     }
 
     @Nullable
@@ -69,5 +80,13 @@ public abstract class WallLanternsMixin extends Block {
         }
 
         return null;
+    }
+
+    private int getDirectionalInt(Direction direction) {
+        return switch (direction) {
+            case NORTH, WEST -> 1;
+            case SOUTH, EAST -> -1;
+            default -> 0;
+        };
     }
 }
