@@ -31,8 +31,8 @@
 			}
 		},
 		{
-			"from": [8, 10, 6.5],
-			"to": [8, 14, 9.5],
+			"from": [8, 10, 6.7],
+			"to": [8, 14, 9.3],
 			"shade": false,
 			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
