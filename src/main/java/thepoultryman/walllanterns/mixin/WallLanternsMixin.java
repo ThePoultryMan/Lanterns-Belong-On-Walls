@@ -63,16 +63,14 @@ public abstract class WallLanternsMixin extends Block {
     @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         boolean returnValue = false;
-        Direction direction = state.get(Properties.HORIZONTAL_FACING);
+        Direction oppositeDirection = state.get(Properties.HORIZONTAL_FACING).getOpposite();
+        Direction attachedDirection = attachedDirection(state).getOpposite();
 
-        if (!world.getBlockState(pos.offset(attachedDirection(state).getOpposite())).isIn(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
+        if (!world.getBlockState(pos.offset(attachedDirection)).isSideSolidFullSquare(world, pos.offset(attachedDirection), attachedDirection) && !world.getBlockState(pos.offset(attachedDirection)).isIn(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
             returnValue = Block.sideCoversSmallSquare(world, pos.offset(attachedDirection(state).getOpposite()), attachedDirection(state));
-            if (direction.getAxis() == Direction.Axis.Z)
-                if (world.getBlockState(pos.add(0, 0, getDirectionalInt(direction))).getBlock() != Blocks.AIR)
-                    returnValue = true;
-            if (direction.getAxis() == Direction.Axis.X)
-                if (world.getBlockState(pos.add(getDirectionalInt(direction), 0, 0)).getBlock() != Blocks.AIR)
-                    returnValue = true;
+            if (world.getBlockState(pos.offset(oppositeDirection)).getBlock() != Blocks.AIR) {
+                returnValue = true;
+            }
         }
 
         cir.setReturnValue(returnValue);
