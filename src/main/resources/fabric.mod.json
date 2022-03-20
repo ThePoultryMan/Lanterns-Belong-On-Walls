@@ -16,7 +16,6 @@
     "icon": "assets/walllanterns/icon.png",
 
     "environment": "*",
-    "entrypoints": {},
     "mixins": [
         "walllanterns.mixins.json"
     ],
