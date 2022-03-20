@@ -6,7 +6,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -85,11 +84,12 @@ public abstract class WallLanternsMixin extends Block {
                 World world = ctx.getWorld();
                 BlockPos pos = ctx.getBlockPos();
 
-                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                        .with(Properties.HORIZONTAL_FACING, Direction.NORTH);
 
-                if (Block.sideCoversSmallSquare(world, pos.offset(Direction.DOWN), Direction.DOWN)) {
+                if (Block.sideCoversSmallSquare(world, pos.offset(Direction.DOWN), Direction.UP)) {
                    return blockState.with(ON_WALL, false).with(HANGING, false);
-                } else if (Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.UP)) {
+                } else if (Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.DOWN)) {
                     return blockState.with(ON_WALL, false).with(HANGING, true);
                 } else if (world.getBlockState(pos.offset(ctx.getPlayerFacing())).isSideSolidFullSquare(world, pos.offset(ctx.getPlayerFacing()), ctx.getPlayerFacing())) {
                     return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite()).with(ON_WALL, true).with(HANGING, true);
