@@ -6,6 +6,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,6 +32,11 @@ public abstract class WallLanternsMixin extends Block {
     @Shadow @Final public static BooleanProperty WATERLOGGED;
 
     @Shadow @Final protected static VoxelShape HANGING_SHAPE;
+
+    @Shadow
+    protected static Direction attachedDirection(BlockState state) {
+        return state.get(HANGING) ? Direction.DOWN : Direction.UP;
+    }
 
     // Voxel Shapes
     private static final VoxelShape ON_WALL_SHAPE_NORTH;
@@ -59,12 +65,15 @@ public abstract class WallLanternsMixin extends Block {
         boolean returnValue = false;
         Direction direction = state.get(Properties.HORIZONTAL_FACING);
 
-        if (direction.getAxis() == Direction.Axis.Z)
-            if (world.getBlockState(pos.add(0, 0, getDirectionalInt(direction))).getBlock() != Blocks.AIR)
-                returnValue = true;
-        if (direction.getAxis() == Direction.Axis.X)
-            if (world.getBlockState(pos.add(getDirectionalInt(direction), 0, 0)).getBlock() != Blocks.AIR)
-                returnValue = true;
+        if (!world.getBlockState(pos.offset(attachedDirection(state).getOpposite())).isIn(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
+            returnValue = Block.sideCoversSmallSquare(world, pos.offset(attachedDirection(state).getOpposite()), attachedDirection(state));
+            if (direction.getAxis() == Direction.Axis.Z)
+                if (world.getBlockState(pos.add(0, 0, getDirectionalInt(direction))).getBlock() != Blocks.AIR)
+                    returnValue = true;
+            if (direction.getAxis() == Direction.Axis.X)
+                if (world.getBlockState(pos.add(getDirectionalInt(direction), 0, 0)).getBlock() != Blocks.AIR)
+                    returnValue = true;
+        }
 
         cir.setReturnValue(returnValue);
     }
