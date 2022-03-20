@@ -12,7 +12,7 @@
         "sources": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"
     },
 
-    "license": "CC0-1.0",
+    "license": "MIT",
     "icon": "assets/walllanterns/icon.png",
 
     "environment": "*",
