@@ -63,17 +63,12 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        boolean returnValue = false;
-        Direction attachedDirection = attachedDirection(state).getOpposite();
+        boolean returnValue = Block.sideCoversSmallSquare(world, pos.offset(attachedDirection(state).getOpposite()), attachedDirection(state));
 
-        if (world.getBlockState(pos.offset(attachedDirection)).isSideSolidFullSquare(world, pos.offset(attachedDirection), attachedDirection) && !world.getBlockState(pos.offset(attachedDirection)).isIn(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
-            returnValue = Block.sideCoversSmallSquare(world, pos.offset(attachedDirection(state).getOpposite()), attachedDirection(state));
-        } else {
-            for (Direction direction : DIRECTIONS) {
-                if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
-                    returnValue = true;
-                    break;
-                }
+        for (Direction direction : DIRECTIONS) {
+            if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
+                returnValue = true;
+                break;
             }
         }
 
