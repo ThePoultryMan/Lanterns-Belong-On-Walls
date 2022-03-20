@@ -117,16 +117,6 @@ public abstract class WallLanternsMixin extends Block {
         }
     }
 
-    // Methods
-
-    private int getDirectionalInt(Direction direction) {
-        return switch (direction) {
-            case NORTH, WEST -> 1;
-            case SOUTH, EAST -> -1;
-            default -> 0;
-        };
-    }
-
     static {
         ON_WALL_SHAPE_NORTH = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(6.9D, 8D, 6D, 9.1D, 15D, 16D), Block.createCuboidShape(6.9D, 8D, 6D, 9.1, 14D, 15D), BooleanBiFunction.ONLY_FIRST));
         ON_WALL_SHAPE_EAST = VoxelShapes.union(HANGING_SHAPE, VoxelShapes.combineAndSimplify(Block.createCuboidShape(0D, 8D, 6.9D, 10D, 15D, 9.1D), Block.createCuboidShape(1D, 8D, 6.9D, 10D, 14D, 9.1D), BooleanBiFunction.ONLY_FIRST));
