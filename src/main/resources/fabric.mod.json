@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "walllanterns",
-    "version": "1.0.0",
+    "version": "${version}",
 
     "name": "Lanterns Belong on Walls",
     "description": "Lanterns Belong on Walls allows the placing of lanterns on walls.",
