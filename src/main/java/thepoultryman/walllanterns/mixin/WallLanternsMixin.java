@@ -13,7 +13,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
@@ -66,18 +65,16 @@ public abstract class WallLanternsMixin extends Block {
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         boolean returnValue = false;
         Direction attachedDirection = attachedDirection(state).getOpposite();
-        Direction oppositeDirection = state.get(Properties.HORIZONTAL_FACING).getOpposite();
 
         if (world.getBlockState(pos.offset(attachedDirection)).isSideSolidFullSquare(world, pos.offset(attachedDirection), attachedDirection) && !world.getBlockState(pos.offset(attachedDirection)).isIn(BlockTags.UNSTABLE_BOTTOM_CENTER)) {
             returnValue = Block.sideCoversSmallSquare(world, pos.offset(attachedDirection(state).getOpposite()), attachedDirection(state));
-        } else if (world.getBlockState(pos.offset(Direction.NORTH)).isSideSolidFullSquare(world, pos.offset(Direction.NORTH), Direction.NORTH)) {
-            returnValue = true;
-        } else if (world.getBlockState(pos.offset(Direction.EAST)).isSideSolidFullSquare(world, pos.offset(Direction.EAST), Direction.EAST)) {
-            returnValue = true;
-        } else if (world.getBlockState(pos.offset(Direction.SOUTH)).isSideSolidFullSquare(world, pos.offset(Direction.SOUTH), Direction.SOUTH)) {
-            returnValue = true;
-        } else if (world.getBlockState(pos.offset(Direction.WEST)).isSideSolidFullSquare(world, pos.offset(Direction.WEST), Direction.WEST)) {
-            returnValue = true;
+        } else {
+            for (Direction direction : DIRECTIONS) {
+                if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
+                    returnValue = true;
+                    break;
+                }
+            }
         }
 
         cir.setReturnValue(returnValue);
@@ -86,31 +83,27 @@ public abstract class WallLanternsMixin extends Block {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockPos.Mutable blockPos = ctx.getBlockPos().mutableCopy();
         BlockState blockState;
 
-        for (Direction direction : ctx.getPlacementDirections()) {
-            if (direction.getAxis() == Direction.Axis.Y) {
+        for (Direction placementDirection : ctx.getPlacementDirections()) {
+            if (placementDirection.getAxis() == Direction.Axis.Y) {
                 World world = ctx.getWorld();
                 BlockPos pos = ctx.getBlockPos();
 
-                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
-                        .with(ON_WALL, true).with(HANGING, true);
+                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
 
                 if (Block.sideCoversSmallSquare(world, pos.offset(Direction.DOWN), Direction.DOWN)) {
                    return blockState.with(ON_WALL, false).with(HANGING, false);
                 } else if (Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.UP)) {
                     return blockState.with(ON_WALL, false).with(HANGING, true);
                 } else if (world.getBlockState(pos.offset(ctx.getPlayerFacing())).isSideSolidFullSquare(world, pos.offset(ctx.getPlayerFacing()), ctx.getPlayerFacing())) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite());
-                } else if (world.getBlockState(pos.offset(Direction.NORTH)).isSideSolidFullSquare(world, pos.offset(Direction.NORTH), Direction.NORTH)) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, Direction.NORTH.getOpposite());
-                } else if (world.getBlockState(pos.offset(Direction.EAST)).isSideSolidFullSquare(world, pos.offset(Direction.EAST), Direction.EAST)) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, Direction.EAST.getOpposite());
-                } else if (world.getBlockState(pos.offset(Direction.SOUTH)).isSideSolidFullSquare(world, pos.offset(Direction.SOUTH), Direction.SOUTH)) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, Direction.SOUTH.getOpposite());
-                } else if (world.getBlockState(pos.offset(Direction.WEST)).isSideSolidFullSquare(world, pos.offset(Direction.WEST), Direction.WEST)) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, Direction.WEST.getOpposite());
+                    return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite()).with(ON_WALL, true).with(HANGING, true);
+                } else {
+                    for (Direction direction : DIRECTIONS) {
+                        if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
+                            return blockState.with(Properties.HORIZONTAL_FACING, direction.getOpposite()).with(ON_WALL, true).with(HANGING, true);
+                        }
+                    }
                 }
             }
         }
