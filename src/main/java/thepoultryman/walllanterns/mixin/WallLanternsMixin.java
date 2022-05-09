@@ -13,6 +13,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -72,6 +73,12 @@ public abstract class WallLanternsMixin extends Block {
         }
 
         cir.setReturnValue(returnValue);
+    }
+
+    @Inject(at = @At("RETURN"), method = "getStateForNeighborUpdate", cancellable = true)
+    public void walllanterns$destroyIfNoAvailableBlock(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+        if (world.getBlockState(pos.offset(state.get(Properties.HORIZONTAL_FACING).getOpposite())).getBlock() == Blocks.AIR)
+            cir.setReturnValue(Blocks.AIR.getDefaultState());
     }
 
     @Nullable
