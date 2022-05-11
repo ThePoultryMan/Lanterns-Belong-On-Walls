@@ -79,7 +79,7 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("RETURN"), method = "getStateForNeighborUpdate", cancellable = true)
     public void walllanterns$destroyIfNoAvailableBlock(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
-        if (world.getBlockState(pos.offset(state.get(Properties.HORIZONTAL_FACING).getOpposite())).getBlock() == Blocks.AIR)
+        if (state.get(ON_WALL) && world.getBlockState(pos.offset(state.get(Properties.HORIZONTAL_FACING).getOpposite())).getBlock() == Blocks.AIR)
             cir.setReturnValue(Blocks.AIR.getDefaultState());
     }
 
