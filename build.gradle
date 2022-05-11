@@ -20,6 +20,13 @@ repositories {
 		name = 'Quilt Snapshots'
 		url = 'https://maven.quiltmc.org/repository/snapshot'
 	}
+
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 dependencies {
@@ -29,6 +36,8 @@ dependencies {
 	})
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version)))
+
+	modCompileOnly "curse.maven:secret-rooms-fabric-359248:3681186"
 }
 
 processResources {
