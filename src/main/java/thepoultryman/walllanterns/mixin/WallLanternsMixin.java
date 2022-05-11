@@ -24,9 +24,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static thepoultryman.walllanterns.OnWallProperty.ON_WALL;
+
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
-    private static final BooleanProperty ON_WALL = BooleanProperty.of("on_wall");
+
 
     @Shadow @Final public static BooleanProperty HANGING;
 
