@@ -1,4 +1,4 @@
-package thepoultryman.walllanterns;
+package io.github.thepoultryman.walllanterns;
 
 import net.minecraft.state.property.BooleanProperty;
 

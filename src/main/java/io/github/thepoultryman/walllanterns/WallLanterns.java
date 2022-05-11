@@ -1,4 +1,4 @@
-package thepoultryman.walllanterns;
+package io.github.thepoultryman.walllanterns;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
