@@ -1,4 +1,4 @@
-package thepoultryman.walllanterns.mixin;
+package io.github.thepoultryman.walllanterns.mixin;
 
 import net.minecraft.block.*;
 import net.minecraft.fluid.Fluids;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static thepoultryman.walllanterns.OnWallProperty.ON_WALL;
+import static io.github.thepoultryman.walllanterns.OnWallProperty.ON_WALL;
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {

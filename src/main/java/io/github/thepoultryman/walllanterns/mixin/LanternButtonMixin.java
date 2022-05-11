@@ -1,4 +1,4 @@
-package thepoultryman.walllanterns.mixin;
+package io.github.thepoultryman.walllanterns.mixin;
 
 import com.github.spaceman.LanternButtonBlock;
 import net.minecraft.block.Block;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static thepoultryman.walllanterns.OnWallProperty.ON_WALL;
+import static io.github.thepoultryman.walllanterns.OnWallProperty.ON_WALL;
 
 @Mixin(LanternButtonBlock.class)
 public abstract class LanternButtonMixin {
