@@ -16,14 +16,9 @@ public class WallLanterns implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
-			ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"), modContainer, getResourcePackActivationType("secretrooms"));
+			if (FabricLoader.getInstance().isModLoaded("secretrooms"))
+				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
+						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
 		});
-	}
-
-	private static ResourcePackActivationType getResourcePackActivationType(String modName) {
-		if (FabricLoader.getInstance().isModLoaded(modName))
-			return ResourcePackActivationType.ALWAYS_ENABLED;
-		else
-			return ResourcePackActivationType.NORMAL;
 	}
 }

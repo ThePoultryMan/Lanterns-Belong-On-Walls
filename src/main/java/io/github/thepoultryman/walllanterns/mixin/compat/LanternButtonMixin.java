@@ -1,4 +1,4 @@
-package io.github.thepoultryman.walllanterns.mixin;
+package io.github.thepoultryman.walllanterns.mixin.compat;
 
 import com.github.spaceman.LanternButtonBlock;
 import io.github.thepoultryman.walllanterns.OnWallProperty;

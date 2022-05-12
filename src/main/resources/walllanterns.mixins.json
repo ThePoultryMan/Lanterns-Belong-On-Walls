@@ -4,10 +4,11 @@
     "package": "io.github.thepoultryman.walllanterns.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "LanternButtonMixin",
-        "WallLanternsMixin"
+        "WallLanternsMixin",
+        "compat.LanternButtonMixin"
     ],
+    "plugin": "io.github.thepoultryman.walllanterns.mixin.plugin.CompatMixinPlugin",
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }
