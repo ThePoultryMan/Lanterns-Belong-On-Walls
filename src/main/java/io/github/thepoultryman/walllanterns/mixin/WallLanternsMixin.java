@@ -1,5 +1,6 @@
-package thepoultryman.walllanterns.mixin;
+package io.github.thepoultryman.walllanterns.mixin;
 
+import io.github.thepoultryman.walllanterns.OnWallProperty;
 import net.minecraft.block.*;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -26,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
-    private static final BooleanProperty ON_WALL = BooleanProperty.of("on_wall");
-
     @Shadow @Final public static BooleanProperty HANGING;
 
     @Shadow @Final public static BooleanProperty WATERLOGGED;
@@ -53,12 +52,12 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
-        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.NORTH).with(ON_WALL, false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.HORIZONTAL_FACING, Direction.NORTH).with(OnWallProperty.ON_WALL, false));
     }
 
     @Inject(at = @At("TAIL"), method = "appendProperties")
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
-        builder.add(Properties.HORIZONTAL_FACING, ON_WALL);
+        builder.add(Properties.HORIZONTAL_FACING, OnWallProperty.ON_WALL);
     }
 
     @Inject(at = @At("RETURN"), method = "canPlaceAt", cancellable = true)
@@ -77,7 +76,7 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("RETURN"), method = "getStateForNeighborUpdate", cancellable = true)
     public void walllanterns$destroyIfNoAvailableBlock(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
-        if (world.getBlockState(pos.offset(state.get(Properties.HORIZONTAL_FACING).getOpposite())).getBlock() == Blocks.AIR)
+        if (state.get(OnWallProperty.ON_WALL) && world.getBlockState(pos.offset(state.get(Properties.HORIZONTAL_FACING).getOpposite())).getBlock() == Blocks.AIR)
             cir.setReturnValue(Blocks.AIR.getDefaultState());
     }
 
@@ -95,15 +94,15 @@ public abstract class WallLanternsMixin extends Block {
                         .with(Properties.HORIZONTAL_FACING, Direction.NORTH);
 
                 if (Block.sideCoversSmallSquare(world, pos.offset(Direction.DOWN), Direction.UP)) {
-                   return blockState.with(ON_WALL, false).with(HANGING, false);
+                   return blockState.with(OnWallProperty.ON_WALL, false).with(HANGING, false);
                 } else if (Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.DOWN)) {
-                    return blockState.with(ON_WALL, false).with(HANGING, true);
+                    return blockState.with(OnWallProperty.ON_WALL, false).with(HANGING, true);
                 } else if (world.getBlockState(pos.offset(ctx.getPlayerFacing())).isSideSolidFullSquare(world, pos.offset(ctx.getPlayerFacing()), ctx.getPlayerFacing())) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite()).with(ON_WALL, true).with(HANGING, true);
+                    return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite()).with(OnWallProperty.ON_WALL, true).with(HANGING, true);
                 } else {
                     for (Direction direction : DIRECTIONS) {
                         if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
-                            return blockState.with(Properties.HORIZONTAL_FACING, direction.getOpposite()).with(ON_WALL, true).with(HANGING, true);
+                            return blockState.with(Properties.HORIZONTAL_FACING, direction.getOpposite()).with(OnWallProperty.ON_WALL, true).with(HANGING, true);
                         }
                     }
                 }
@@ -117,7 +116,7 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("RETURN"), method = "getOutlineShape", cancellable = true)
     public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
-        if (state.get(ON_WALL)) {
+        if (state.get(OnWallProperty.ON_WALL)) {
             cir.setReturnValue(switch(state.get(Properties.HORIZONTAL_FACING)) {
                 case NORTH -> ON_WALL_SHAPE_NORTH;
                 case EAST -> ON_WALL_SHAPE_EAST;

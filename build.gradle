@@ -2,6 +2,7 @@ plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 	id "org.quiltmc.quilt-mappings-on-loom" version "4.2.0"
+	id "io.github.p03w.machete" version "1.0.11"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -20,6 +21,13 @@ repositories {
 		name = 'Quilt Snapshots'
 		url = 'https://maven.quiltmc.org/repository/snapshot'
 	}
+
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 dependencies {
@@ -29,6 +37,8 @@ dependencies {
 	})
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version)))
+
+	modCompileOnly "curse.maven:secret-rooms-fabric-359248:3681186"
 }
 
 processResources {

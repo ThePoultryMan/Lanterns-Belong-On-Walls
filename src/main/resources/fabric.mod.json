@@ -16,6 +16,9 @@
     "icon": "assets/walllanterns/icon.png",
 
     "environment": "*",
+    "entrypoints": {
+        "main": ["io.github.thepoultryman.walllanterns.WallLanterns"]
+    },
     "mixins": [
         "walllanterns.mixins.json"
     ],
