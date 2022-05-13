@@ -8,10 +8,13 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class WallLanterns implements ModInitializer {
 	public static final String MOD_ID = "walllanterns";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	private static final List<String> COMPAT_MODS = List.of("oxidized");
 
 	@Override
 	public void onInitialize() {
@@ -19,6 +22,13 @@ public class WallLanterns implements ModInitializer {
 			if (FabricLoader.getInstance().isModLoaded("secretrooms"))
 				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
 						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+			for (String modId : COMPAT_MODS) {
+				if (FabricLoader.getInstance().isModLoaded(modId)) {
+					ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "moddedlanternscompat"),
+							modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+					break;
+				}
+			}
 		});
 	}
 }

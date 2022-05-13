@@ -102,7 +102,7 @@ public abstract class WallLanternsMixin extends Block {
                 } else {
                     for (Direction direction : DIRECTIONS) {
                         if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
-                            return blockState.with(Properties.HORIZONTAL_FACING, direction.getOpposite()).with(OnWallProperty.ON_WALL, true).with(HANGING, true);
+                            return null;
                         }
                     }
                 }
