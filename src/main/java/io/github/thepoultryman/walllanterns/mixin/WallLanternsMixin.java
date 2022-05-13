@@ -27,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
-
-
     @Shadow @Final public static BooleanProperty HANGING;
 
     @Shadow @Final public static BooleanProperty WATERLOGGED;
