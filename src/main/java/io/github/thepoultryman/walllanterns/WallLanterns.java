@@ -19,6 +19,9 @@ public class WallLanterns implements ModInitializer {
 			if (FabricLoader.getInstance().isModLoaded("secretrooms"))
 				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
 						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+			if (FabricLoader.getInstance().isModLoaded("oxidized"))
+				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "moddedlanternscompat"),
+						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
 		});
 	}
 }

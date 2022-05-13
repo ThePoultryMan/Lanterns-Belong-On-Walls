@@ -1,0 +1,7 @@
+{
+	"parent": "walllanterns:block/wall_lantern_template",
+	"textures": {
+		"lantern_holder": "moddedlanternscompat:block/copper_lantern_holder",
+		"lantern": "oxidized:block/copper_lantern_hanging"
+	}
+}
