@@ -1,0 +1,6 @@
+{
+    "parent": "walllanterns:block/wall_lantern_template",
+    "textures": {
+        "lantern": "byg:block/boric_lantern"
+    }
+}
