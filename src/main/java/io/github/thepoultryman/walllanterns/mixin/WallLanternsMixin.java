@@ -83,33 +83,10 @@ public abstract class WallLanternsMixin extends Block {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState blockState;
-
-        for (Direction placementDirection : ctx.getPlacementDirections()) {
-            if (placementDirection.getAxis() == Direction.Axis.Y) {
-                World world = ctx.getWorld();
-                BlockPos pos = ctx.getBlockPos();
-
-                blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
-                        .with(Properties.HORIZONTAL_FACING, Direction.NORTH);
-
-                if (Block.sideCoversSmallSquare(world, pos.offset(Direction.DOWN), Direction.UP)) {
-                   return blockState.with(OnWallProperty.ON_WALL, false).with(HANGING, false);
-                } else if (Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.DOWN)) {
-                    return blockState.with(OnWallProperty.ON_WALL, false).with(HANGING, true);
-                } else if (world.getBlockState(pos.offset(ctx.getPlayerFacing())).isSideSolidFullSquare(world, pos.offset(ctx.getPlayerFacing()), ctx.getPlayerFacing())) {
-                    return blockState.with(Properties.HORIZONTAL_FACING, ctx.getPlayerFacing().getOpposite()).with(OnWallProperty.ON_WALL, true).with(HANGING, true);
-                } else {
-                    for (Direction direction : DIRECTIONS) {
-                        if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos.offset(direction), direction)) {
-                            return null;
-                        }
-                    }
-                }
-            }
-        }
-
-        return null;
+        BlockState blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                .with(Properties.HORIZONTAL_FACING, Direction.fromHorizontal(ctx.getSide().getHorizontal()))
+                .with(OnWallProperty.ON_WALL, ctx.getSide() != Direction.UP && ctx.getSide() != Direction.DOWN);
+        return blockState.with(HANGING, ctx.getSide() != Direction.UP || blockState.get(OnWallProperty.ON_WALL));
     }
 
     // Visuals
