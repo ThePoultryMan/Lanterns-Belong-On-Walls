@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "hanging=true,on_wall=true,facing=north": {
+            "model": "moddedlanternscompat:block/variant_lanterns/wall_brass_soul_lantern"
+        },
+        "hanging=true,on_wall=true,facing=east": {
+            "model": "moddedlanternscompat:block/variant_lanterns/wall_brass_soul_lantern",
+            "y": 90
+        },
+        "hanging=true,on_wall=true,facing=south": {
+            "model": "moddedlanternscompat:block/variant_lanterns/wall_brass_soul_lantern",
+            "y": 180
+        },
+        "hanging=true,on_wall=true,facing=west": {
+            "model": "moddedlanternscompat:block/variant_lanterns/wall_brass_soul_lantern",
+            "y": 270
+        }
+    }
+}
