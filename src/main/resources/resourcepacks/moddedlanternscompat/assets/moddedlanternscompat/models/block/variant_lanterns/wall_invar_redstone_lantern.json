@@ -1,0 +1,7 @@
+{
+	"parent": "walllanterns:block/wall_lantern_template",
+	"textures": {
+		"lantern_holder": "moddedlanternscompat:block/variant_lanterns/invar_lantern_holder",
+		"lantern": "variant_lanterns:block/invar_redstone_lantern"
+	}
+}
