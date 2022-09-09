@@ -1,18 +1,18 @@
 {
     "variants": {
-        "hanging=true,on_wall=true,facing=north,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern" },
-        "hanging=true,on_wall=true,facing=north,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on" },
-        "hanging=true,on_wall=true,facing=east,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
+        "hanging=false,facing=north,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern" },
+        "hanging=false,facing=north,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on" },
+        "hanging=false,facing=east,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
             "y": 90 },
-        "hanging=true,on_wall=true,facing=east,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
+        "hanging=false,facing=east,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
             "y": 90 },
-        "hanging=true,on_wall=true,facing=south,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
+        "hanging=false,facing=south,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
             "y": 180 },
-        "hanging=true,on_wall=true,facing=south,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
+        "hanging=false,facing=south,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
             "y": 180 },
-        "hanging=true,on_wall=true,facing=west,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
+        "hanging=false,facing=west,lit=false": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern",
             "y": 270 },
-        "hanging=true,on_wall=true,facing=west,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
+        "hanging=false,facing=west,lit=true": { "model": "moddedlanternscompat:block/charm/wall_redstone_lantern_on",
             "y": 270 }
     }
 }
