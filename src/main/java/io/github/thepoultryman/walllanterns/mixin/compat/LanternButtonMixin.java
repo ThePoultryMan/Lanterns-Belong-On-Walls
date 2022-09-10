@@ -1,7 +1,6 @@
 package io.github.thepoultryman.walllanterns.mixin.compat;
 
 import com.github.spaceman.LanternButtonBlock;
-import io.github.thepoultryman.walllanterns.OnWallProperty;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.StateManager;
@@ -15,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LanternButtonMixin {
     @Inject(at = @At("TAIL"), method = "appendProperties")
     protected void walllanterns$appendWallProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
-        builder.add(Properties.HORIZONTAL_FACING, OnWallProperty.ON_WALL);
+        builder.add(Properties.FACING);
     }
 }
