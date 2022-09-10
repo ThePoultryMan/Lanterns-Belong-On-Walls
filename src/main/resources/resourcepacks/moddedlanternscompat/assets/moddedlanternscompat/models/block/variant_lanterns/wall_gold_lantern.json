@@ -1,0 +1,7 @@
+{
+	"parent": "walllanterns:block/wall_lantern_template",
+	"textures": {
+		"lantern_holder": "moddedlanternscompat:block/variant_lanterns/gold_lantern_holder",
+		"lantern": "variant_lanterns:block/gold_lantern"
+	}
+}
