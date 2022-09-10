@@ -23,9 +23,10 @@ repositories {
 	}
 
 	maven {
-		url "https://cursemaven.com"
+		name = 'Modrinth'
+		url = 'https://api.modrinth.com/maven'
 		content {
-			includeGroup "curse.maven"
+			includeGroup "maven.modrinth"
 		}
 	}
 }
@@ -38,7 +39,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version)))
 
-	modCompileOnly "curse.maven:secret-rooms-fabric-359248:3681186"
+	modCompileOnly "maven.modrinth:secret-rooms:1.3.2"
 }
 
 processResources {
