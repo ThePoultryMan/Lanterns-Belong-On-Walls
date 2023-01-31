@@ -1,12 +1,17 @@
 package io.github.thepoultryman.walllanterns;
 
+//import com.github.spaceman.SecretRooms;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Blocks;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import virtuoel.statement.api.StateRefresher;
 
 import java.util.List;
 
@@ -16,12 +21,20 @@ public class WallLanterns implements ModInitializer {
 
 	private static final List<String> COMPAT_MODS = List.of("oxidized", "byg", "charm");
 
+	public static final DirectionProperty LANTERN_DIRECTION = DirectionProperty.of("facing");
+
 	@Override
 	public void onInitialize() {
+		StateRefresher.INSTANCE.addBlockProperty(Blocks.LANTERN, LANTERN_DIRECTION, Direction.UP);
+		StateRefresher.INSTANCE.addBlockProperty(Blocks.SOUL_LANTERN, LANTERN_DIRECTION, Direction.UP);
+
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
-			if (FabricLoader.getInstance().isModLoaded("secretrooms"))
-				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
-						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+//			if (FabricLoader.getInstance().isModLoaded("secretrooms")) {
+//				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
+//						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+//				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
+//				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.SOUL_LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
+//			}
 			for (String modId : COMPAT_MODS) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
 					ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "moddedlanternscompat"),
@@ -30,5 +43,7 @@ public class WallLanterns implements ModInitializer {
 				}
 			}
 		});
+
+		StateRefresher.INSTANCE.reorderBlockStates();
 	}
 }
