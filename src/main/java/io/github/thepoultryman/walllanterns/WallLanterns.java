@@ -1,6 +1,7 @@
 package io.github.thepoultryman.walllanterns;
 
 //import com.github.spaceman.SecretRooms;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -11,6 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import safro.oxidized.registry.BlockRegistry;
 import virtuoel.statement.api.StateRefresher;
 
 import java.util.List;
@@ -35,12 +37,19 @@ public class WallLanterns implements ModInitializer {
 //				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
 //				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.SOUL_LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
 //			}
+			boolean activateCompat = false;
+
 			for (String modId : COMPAT_MODS) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
-					ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "moddedlanternscompat"),
-							modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
-					break;
+					if (modId.equals("oxidized")) StateRefresher.INSTANCE.addBlockProperty(BlockRegistry.COPPER_LANTERN, LANTERN_DIRECTION, Direction.UP);
+
+					activateCompat = true;
 				}
+			}
+
+			if (activateCompat) {
+				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "moddedlanternscompat"),
+						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
 			}
 		});
 
