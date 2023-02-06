@@ -3,7 +3,6 @@ package io.github.thepoultryman.walllanterns.mixin;
 import net.minecraft.block.*;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.function.BooleanBiFunction;
@@ -20,8 +19,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+// I'm leaving the code commented for reference purposes.
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
@@ -40,19 +40,20 @@ public abstract class WallLanternsMixin extends Block {
 
     public WallLanternsMixin(Settings settings) {
         super(settings);
+        throw new IllegalStateException("This constructor should NEVER be called. Don't call this unless you know what you're doing.");
     }
 
     // Blockstate Stuff
 
-    @Inject(at = @At("TAIL"), method = "<init>")
-    private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
-        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.FACING, Direction.NORTH));
-    }
+//    @Inject(at = @At("TAIL"), method = "<init>")
+//    private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
+//        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.FACING, Direction.NORTH));
+//    }
 
-    @Inject(at = @At("TAIL"), method = "appendProperties")
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
-        builder.add(Properties.FACING);
-    }
+//    @Inject(at = @At("TAIL"), method = "appendProperties")
+//    protected void appendProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
+//        builder.add(Properties.FACING);
+//    }
 
     @Inject(at = @At("HEAD"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
