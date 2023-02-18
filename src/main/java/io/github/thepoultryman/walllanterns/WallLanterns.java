@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.slf4j.Logger;
@@ -27,8 +27,8 @@ public class WallLanterns implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		StateRefresher.INSTANCE.addBlockProperty(Blocks.LANTERN, LANTERN_DIRECTION, Direction.UP);
-		StateRefresher.INSTANCE.addBlockProperty(Blocks.SOUL_LANTERN, LANTERN_DIRECTION, Direction.UP);
+		StateRefresher.INSTANCE.addBlockProperty(Blocks.LANTERN, Properties.FACING, Direction.UP);
+		StateRefresher.INSTANCE.addBlockProperty(Blocks.SOUL_LANTERN, Properties.FACING, Direction.UP);
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
 //			if (FabricLoader.getInstance().isModLoaded("secretrooms")) {
@@ -41,7 +41,7 @@ public class WallLanterns implements ModInitializer {
 
 			for (String modId : COMPAT_MODS) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
-					if (modId.equals("oxidized")) StateRefresher.INSTANCE.addBlockProperty(BlockRegistry.COPPER_LANTERN, LANTERN_DIRECTION, Direction.UP);
+					if (modId.equals("oxidized")) StateRefresher.INSTANCE.addBlockProperty(BlockRegistry.COPPER_LANTERN, Properties.FACING, Direction.UP);
 
 					activateCompat = true;
 				}
