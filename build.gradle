@@ -55,6 +55,9 @@ dependencies {
 	modCompileOnly "maven.modrinth:variant-lanterns:1.0.4"
 	modCompileOnly "maven.modrinth:biomesyougo:2.0.0.13"
 
+	// These are actually used
+	modCompileOnly "curse.maven:expanded-copper-570438:4354861"
+
 	//modCompileOnly "maven.modrinth:secret-rooms:1.3.2"
 }
 

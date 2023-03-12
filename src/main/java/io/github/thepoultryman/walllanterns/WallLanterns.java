@@ -2,6 +2,7 @@ package io.github.thepoultryman.walllanterns;
 
 //import com.github.spaceman.SecretRooms;
 
+import com.lankaster.extendedcopper.block.ModBlocks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -21,9 +22,7 @@ public class WallLanterns implements ModInitializer {
 	public static final String MOD_ID = "walllanterns";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private static final List<String> COMPAT_MODS = List.of("oxidized", "byg", "charm");
-
-	public static final DirectionProperty LANTERN_DIRECTION = DirectionProperty.of("facing");
+	private static final List<String> COMPAT_MODS = List.of("oxidized", "byg", "charm", "extendedcopper");
 
 	@Override
 	public void onInitialize() {
@@ -42,6 +41,7 @@ public class WallLanterns implements ModInitializer {
 			for (String modId : COMPAT_MODS) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
 					if (modId.equals("oxidized")) StateRefresher.INSTANCE.addBlockProperty(BlockRegistry.COPPER_LANTERN, Properties.FACING, Direction.UP);
+					if (modId.equals("extendedcopper")) StateRefresher.INSTANCE.addBlockProperty(ModBlocks.COPPER_LANTERN, Properties.FACING, Direction.UP);
 
 					activateCompat = true;
 				}
