@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"lantern_holder": "walllanterns:block/lantern_holder"
+		"lantern_holder": "walllanterns:block/lantern_holder",
+		"particle": "#lantern"
 	},
 	"elements": [
 		{
