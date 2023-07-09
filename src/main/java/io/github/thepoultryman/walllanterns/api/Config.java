@@ -57,10 +57,9 @@ public class Config {
                     Writer writer = new FileWriter(configPath.toFile());
                     gson.toJson(this.configuration, writer);
                     writer.close();
-                } catch (IOException ignored) {
-
+                } catch (IOException exception) {
+                    WallLanterns.LOGGER.warn("Error updating configuration file. An attempt will be made next launch to update the file.", exception);
                 }
-
             }
         }
     }
@@ -89,6 +88,7 @@ public class Config {
                 Gson gson = new Gson();
                 Reader reader = new InputStreamReader(inputStream);
                 ConfigType defaultConfig = gson.fromJson(reader, ConfigType.class);
+                try { reader.close(); } catch (IOException ignored) {}
 
                 for (String identifier : defaultConfig.vanillaTypeLanterns) {
                     if (!this.vanillaTypeLanterns.contains(identifier)) this.vanillaTypeLanterns.add(identifier);
