@@ -3,18 +3,18 @@ package io.github.thepoultryman.walllanterns;
 //import com.github.spaceman.SecretRooms;
 
 //import com.lankaster.extendedcopper.block.ModBlocks;
+import io.github.thepoultryman.walllanterns.api.Config;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Blocks;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import safro.oxidized.registry.BlockRegistry;
 import virtuoel.statement.api.StateRefresher;
+import virtuoel.statement.util.RegistryUtils;
 
 import java.util.List;
 
@@ -26,23 +26,17 @@ public class WallLanterns implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		StateRefresher.INSTANCE.addBlockProperty(Blocks.LANTERN, Properties.FACING, Direction.UP);
-		StateRefresher.INSTANCE.addBlockProperty(Blocks.SOUL_LANTERN, Properties.FACING, Direction.UP);
+		for (Identifier lanternIdentifier : Config.INSTANCE.getVanillaTypeLanterns()) {
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, lanternIdentifier).ifPresent(
+					lantern -> StateRefresher.INSTANCE.addBlockProperty(lantern, Properties.FACING, Direction.UP)
+			);
+		}
 
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
-//			if (FabricLoader.getInstance().isModLoaded("secretrooms")) {
-//				ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "secretroomscompat"),
-//						modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
-//				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
-//				StateRefresher.INSTANCE.addBlockProperty(SecretRooms.SOUL_LANTERN_BUTTON_BLOCK, LANTERN_DIRECTION, Direction.UP);
-//			}
 			boolean activateCompat = false;
 
 			for (String modId : COMPAT_MODS) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
-					if (modId.equals("oxidized")) StateRefresher.INSTANCE.addBlockProperty(BlockRegistry.COPPER_LANTERN, Properties.FACING, Direction.UP);
-					//if (modId.equals("extendedcopper")) StateRefresher.INSTANCE.addBlockProperty(ModBlocks.COPPER_LANTERN, Properties.FACING, Direction.UP);
-
 					activateCompat = true;
 				}
 			}
