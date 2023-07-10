@@ -22,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// I'm leaving the code commented for reference purposes.
-
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
     @Shadow @Final public static BooleanProperty HANGING;
@@ -62,6 +60,7 @@ public abstract class WallLanternsMixin extends Block {
     @Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
     public void getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
         if (!state.contains(Properties.FACING)) return;
+        if (state.get(WATERLOGGED)) world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         cir.setReturnValue(
                 world.getBlockState(pos.offset(state.get(Properties.FACING).getOpposite())).getBlock() == Blocks.AIR ? Blocks.AIR.getDefaultState() : state
         );
