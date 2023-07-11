@@ -31,6 +31,7 @@ public abstract class WallLanternsMixin extends Block {
     @Shadow @Final protected static VoxelShape HANGING_SHAPE;
 
     @Shadow @Final protected static VoxelShape STANDING_SHAPE;
+
     // Voxel Shapes
     @Unique
     private static final VoxelShape ON_WALL_SHAPE_NORTH;
@@ -50,9 +51,14 @@ public abstract class WallLanternsMixin extends Block {
 
     @Inject(at = @At("HEAD"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (!state.contains(Properties.FACING)) return;
-        Direction direction = state.get(Properties.FACING);
-        boolean returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction.getOpposite()), direction);
+        boolean returnValue;
+        if (!state.contains(Properties.FACING)) {
+            Direction direction = state.get(HANGING) ? Direction.DOWN : Direction.UP;
+            returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction), direction.getOpposite());
+        } else {
+            Direction direction = state.get(Properties.FACING);
+            returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction.getOpposite()), direction);
+        }
 
         cir.setReturnValue(returnValue);
     }
