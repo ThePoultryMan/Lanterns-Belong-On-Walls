@@ -13,7 +13,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -53,7 +52,7 @@ public abstract class WallLanternsMixin extends Block {
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         boolean returnValue;
         if (!state.contains(Properties.FACING)) {
-            Direction direction = state.get(HANGING) ? Direction.DOWN : Direction.UP;
+            Direction direction = state.get(HANGING) ? Direction.UP : Direction.DOWN;
             returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction), direction.getOpposite());
         } else {
             Direction direction = state.get(Properties.FACING);
@@ -72,14 +71,15 @@ public abstract class WallLanternsMixin extends Block {
         );
     }
 
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
+    @Inject(at = @At("HEAD"), method = "getPlacementState", cancellable = true)
+    public void getPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
         BlockState blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
-        if (this.getDefaultState().contains(Properties.FACING)) {
+        if (!this.getDefaultState().contains(Properties.FACING)) {
+            blockState = blockState.with(HANGING, ctx.getSide() == Direction.DOWN);
+        } else {
             blockState = blockState.with(Properties.FACING, ctx.getSide()).with(HANGING, ctx.getSide() == Direction.DOWN);
         }
-        return blockState;
+        cir.setReturnValue(blockState);
     }
 
     // Visuals
