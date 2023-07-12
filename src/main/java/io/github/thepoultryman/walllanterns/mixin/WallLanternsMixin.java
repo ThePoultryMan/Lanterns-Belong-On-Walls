@@ -13,15 +13,13 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-// I'm leaving the code commented for reference purposes.
 
 @Mixin(LanternBlock.class)
 public abstract class WallLanternsMixin extends Block {
@@ -32,10 +30,15 @@ public abstract class WallLanternsMixin extends Block {
     @Shadow @Final protected static VoxelShape HANGING_SHAPE;
 
     @Shadow @Final protected static VoxelShape STANDING_SHAPE;
+
     // Voxel Shapes
+    @Unique
     private static final VoxelShape ON_WALL_SHAPE_NORTH;
+    @Unique
     private static final VoxelShape ON_WALL_SHAPE_EAST;
+    @Unique
     private static final VoxelShape ON_WALL_SHAPE_SOUTH;
+    @Unique
     private static final VoxelShape ON_WALL_SHAPE_WEST;
 
     public WallLanternsMixin(Settings settings) {
@@ -45,41 +48,45 @@ public abstract class WallLanternsMixin extends Block {
 
     // Blockstate Stuff
 
-//    @Inject(at = @At("TAIL"), method = "<init>")
-//    private void injectMethod(AbstractBlock.Settings settings, CallbackInfo ci) {
-//        this.setDefaultState(this.stateManager.getDefaultState().with(Properties.FACING, Direction.NORTH));
-//    }
-
-//    @Inject(at = @At("TAIL"), method = "appendProperties")
-//    protected void appendProperties(StateManager.Builder<Block, BlockState> builder, CallbackInfo ci) {
-//        builder.add(Properties.FACING);
-//    }
-
     @Inject(at = @At("HEAD"), method = "canPlaceAt", cancellable = true)
     public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        Direction direction = state.get(Properties.FACING);
-        boolean returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction.getOpposite()), direction);
+        boolean returnValue;
+        if (!state.contains(Properties.FACING)) {
+            Direction direction = state.get(HANGING) ? Direction.UP : Direction.DOWN;
+            returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction), direction.getOpposite());
+        } else {
+            Direction direction = state.get(Properties.FACING);
+            returnValue = Block.sideCoversSmallSquare(world, pos.offset(direction.getOpposite()), direction);
+        }
 
         cir.setReturnValue(returnValue);
     }
 
-    @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        return world.getBlockState(pos.offset(state.get(Properties.FACING).getOpposite())).getBlock() == Blocks.AIR ? Blocks.AIR.getDefaultState() : state;
+    @Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
+    public void getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+        if (!state.contains(Properties.FACING)) return;
+        if (state.get(WATERLOGGED)) world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        cir.setReturnValue(
+                world.getBlockState(pos.offset(state.get(Properties.FACING).getOpposite())).getBlock() == Blocks.AIR ? Blocks.AIR.getDefaultState() : state
+        );
     }
 
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
-                .with(Properties.FACING, ctx.getSide());
-        return blockState.with(HANGING, ctx.getSide() == Direction.DOWN);
+    @Inject(at = @At("HEAD"), method = "getPlacementState", cancellable = true)
+    public void getPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
+        BlockState blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+        if (!this.getDefaultState().contains(Properties.FACING)) {
+            blockState = blockState.with(HANGING, ctx.getSide() == Direction.DOWN);
+        } else {
+            blockState = blockState.with(Properties.FACING, ctx.getSide()).with(HANGING, ctx.getSide() == Direction.DOWN);
+        }
+        cir.setReturnValue(blockState);
     }
 
     // Visuals
 
     @Inject(at = @At("HEAD"), method = "getOutlineShape", cancellable = true)
     public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+        if (!state.contains(Properties.FACING)) return;
         cir.setReturnValue(switch(state.get(Properties.FACING)) {
             case NORTH -> ON_WALL_SHAPE_NORTH;
             case EAST -> ON_WALL_SHAPE_EAST;

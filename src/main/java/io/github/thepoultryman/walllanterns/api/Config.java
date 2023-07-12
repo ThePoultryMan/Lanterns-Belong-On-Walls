@@ -73,6 +73,12 @@ public class Config {
         return identifiers;
     }
 
+    public static String[] getSupportedMods() {
+        return new String[] {
+                "oxidized"
+        };
+    }
+
     public static class ConfigType {
         private static final int EXPECTED_VANILLA_TYPE_LANTERNS = 2;
 
