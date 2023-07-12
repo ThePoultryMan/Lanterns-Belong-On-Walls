@@ -3,6 +3,7 @@ package io.github.thepoultryman.walllanterns;
 //import com.github.spaceman.SecretRooms;
 
 //import com.lankaster.extendedcopper.block.ModBlocks;
+
 import io.github.thepoultryman.walllanterns.api.Config;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -16,13 +17,9 @@ import org.slf4j.LoggerFactory;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.util.RegistryUtils;
 
-import java.util.List;
-
 public class WallLanterns implements ModInitializer {
 	public static final String MOD_ID = "walllanterns";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-	private static final List<String> COMPAT_MODS = List.of("oxidized", "byg", "charm", "extendedcopper");
 
 	@Override
 	public void onInitialize() {
@@ -35,7 +32,7 @@ public class WallLanterns implements ModInitializer {
 		FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
 			boolean activateCompat = false;
 
-			for (String modId : COMPAT_MODS) {
+			for (String modId : Config.getSupportedMods()) {
 				if (FabricLoader.getInstance().isModLoaded(modId)) {
 					activateCompat = true;
 				}
