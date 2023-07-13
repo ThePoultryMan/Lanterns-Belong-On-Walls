@@ -75,7 +75,8 @@ public class Config {
 
     public static String[] getSupportedMods() {
         return new String[] {
-                "oxidized"
+                "oxidized",
+                "extendedcopper"
         };
     }
 

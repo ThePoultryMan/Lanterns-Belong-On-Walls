@@ -17,7 +17,8 @@
 
     "environment": "*",
     "entrypoints": {
-        "main": ["io.github.thepoultryman.walllanterns.WallLanterns"]
+        "main": ["io.github.thepoultryman.walllanterns.WallLanterns"],
+        "statement": ["io.github.thepoultryman.walllanterns.WallLanterns"]
     },
     "mixins": [
         "walllanterns.mixins.json"
@@ -25,9 +26,9 @@
 
     "depends": {
         "fabricloader": ">=0.14.21",
-        "minecraft": "1.19.4",
+        "minecraft": ">=1.20.1",
         "java": ">=17",
-        "statement": ">=4.2.5"
+        "statement": ">=4.2.6"
     },
     "suggests": {
 

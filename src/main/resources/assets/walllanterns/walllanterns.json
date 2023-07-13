@@ -2,6 +2,7 @@
     "vanillaTypeLanterns": [
         "minecraft:lantern",
         "minecraft:soul_lantern",
-        "oxidized:copper_lantern"
+        "oxidized:copper_lantern",
+        "extendedcopper:copper_lantern"
     ]
 }
