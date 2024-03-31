@@ -49,7 +49,7 @@ public abstract class WallLanternsMixin extends Block {
     // Blockstate Stuff
 
     @Inject(at = @At("HEAD"), method = "canPlaceAt", cancellable = true)
-    public void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    public void walllanterns$canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         boolean returnValue;
         if (!state.contains(Properties.FACING)) {
             Direction direction = state.get(HANGING) ? Direction.UP : Direction.DOWN;
@@ -63,7 +63,7 @@ public abstract class WallLanternsMixin extends Block {
     }
 
     @Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
-    public void getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+    public void walllanterns$getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
         if (!state.contains(Properties.FACING)) return;
         if (state.get(WATERLOGGED)) world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         cir.setReturnValue(
@@ -72,7 +72,7 @@ public abstract class WallLanternsMixin extends Block {
     }
 
     @Inject(at = @At("HEAD"), method = "getPlacementState", cancellable = true)
-    public void getPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
+    public void walllanterns$getPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
         BlockState blockState = this.getDefaultState().with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
         if (!this.getDefaultState().contains(Properties.FACING)) {
             blockState = blockState.with(HANGING, ctx.getSide() == Direction.DOWN);
@@ -85,7 +85,7 @@ public abstract class WallLanternsMixin extends Block {
     // Visuals
 
     @Inject(at = @At("HEAD"), method = "getOutlineShape", cancellable = true)
-    public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+    public void walllanterns$getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
         if (!state.contains(Properties.FACING)) return;
         cir.setReturnValue(switch(state.get(Properties.FACING)) {
             case NORTH -> ON_WALL_SHAPE_NORTH;
