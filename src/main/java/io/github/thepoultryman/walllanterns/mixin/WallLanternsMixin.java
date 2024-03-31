@@ -43,7 +43,7 @@ public abstract class WallLanternsMixin extends Block {
 
     public WallLanternsMixin(Settings settings) {
         super(settings);
-        throw new IllegalStateException("This constructor should NEVER be called. Don't call this unless you know what you're doing.");
+        throw new IllegalStateException("This constructor should NEVER be called.");
     }
 
     // Blockstate Stuff
