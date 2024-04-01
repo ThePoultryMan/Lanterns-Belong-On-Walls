@@ -20,6 +20,7 @@
         "main": ["io.github.thepoultryman.walllanterns.WallLanterns"],
         "statement": ["io.github.thepoultryman.walllanterns.WallLanterns"]
     },
+    "accessWidener": "walllanterns.accesswidener",
     "mixins": [
         "walllanterns.mixins.json"
     ],
