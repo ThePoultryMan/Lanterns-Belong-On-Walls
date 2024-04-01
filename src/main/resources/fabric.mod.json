@@ -18,7 +18,8 @@
     "environment": "*",
     "entrypoints": {
         "main": ["io.github.thepoultryman.walllanterns.WallLanterns"],
-        "statement": ["io.github.thepoultryman.walllanterns.WallLanterns"]
+        "statement": ["io.github.thepoultryman.walllanterns.WallLanterns"],
+        "walllanterns": ["io.github.thepoultryman.walllanterns.VanillaWallLanterns"]
     },
     "accessWidener": "walllanterns.accesswidener",
     "mixins": [
