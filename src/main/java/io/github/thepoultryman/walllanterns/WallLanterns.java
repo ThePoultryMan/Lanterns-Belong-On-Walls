@@ -14,9 +14,14 @@ import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
 import virtuoel.statement.util.RegistryUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WallLanterns implements ModInitializer, StatementApi {
 	public static final String MOD_ID = "walllanterns";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static final List<String> STRUCTURE_LANTERNS = new ArrayList<>(List.of("minecraft:lantern", "minecraft:soul_lantern"));
 
 	@Override
 	public void onInitialize() {

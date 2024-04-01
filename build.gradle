@@ -61,6 +61,10 @@ dependencies {
 	modLocalRuntime "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
+loom {
+	accessWidenerPath = file "src/main/resources/walllanterns.accesswidener"
+}
+
 processResources {
 	inputs.property "version", project.version
 
