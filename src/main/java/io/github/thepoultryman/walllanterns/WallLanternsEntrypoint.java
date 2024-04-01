@@ -18,7 +18,10 @@ public interface WallLanternsEntrypoint {
     default void addLantern(Identifier... ids) {
         for (Identifier id : ids) {
             RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(
-                    lantern -> StateRefresher.INSTANCE.addBlockProperty(lantern, Properties.FACING, Direction.UP)
+                    lantern -> {
+                        StateRefresher.INSTANCE.addBlockProperty(lantern, Properties.FACING, Direction.UP);
+                        WallLanterns.WALLABLE_LANTERNS.add(id.toString());
+                    }
             );
         }
     }
