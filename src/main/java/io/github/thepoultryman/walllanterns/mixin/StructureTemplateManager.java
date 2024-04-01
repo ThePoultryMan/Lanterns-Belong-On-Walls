@@ -20,7 +20,7 @@ public class StructureTemplateManager {
             for (int i = 0; i < nbtList.size(); i++) {
                 NbtCompound nbtCompound = nbtList.getCompound(i);
                 NbtElement nameElement = nbtCompound.get("Name");
-                if (nameElement == null || !WallLanterns.STRUCTURE_LANTERNS.contains(nameElement.asString())) continue;
+                if (nameElement == null || !WallLanterns.WALLABLE_LANTERNS.contains(nameElement.asString())) continue;
                 WallLanterns.LOGGER.debug("Patching structure data...");
                 NbtCompound properties = nbtCompound.getCompound("Properties");
                 if (properties.contains("facing")) {

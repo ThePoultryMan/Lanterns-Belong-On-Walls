@@ -14,7 +14,8 @@ public class WallLanterns implements ModInitializer, StatementApi {
 	public static final String MOD_ID = "walllanterns";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final List<String> STRUCTURE_LANTERNS = new ArrayList<>(List.of("minecraft:lantern", "minecraft:soul_lantern"));
+	// It is safe to assume the 2 vanilla lanterns will be wallable.
+	public static final List<String> WALLABLE_LANTERNS = new ArrayList<>(2);
 
 	@Override
 	public void onInitialize() {
