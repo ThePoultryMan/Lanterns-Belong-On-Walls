@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "walllanterns"
+version = "${version}"
+displayName = "Lanterns Belong On Walls"
+authors = "ThePoultryMan"
+description = '''
+A mod for Minecraft that allows placing lanterns on walls 
+'''
+#logoFile = ""
+
+[[dependencies.walllanterns]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.walllanterns]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.4,)"
+ordering = "NONE"
+side = "BOTH"
+
+
+[[mixins]]
+config = "walllanterns.mixins.json"

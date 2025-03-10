@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "walllanterns",
+  "version": "${version}",
+  "name": "Lanterns Belong On Walls",
+  "description": "A mod for Minecraft that allows placing lanterns on walls ",
+  "authors": ["ThePoultryMan"],
+  "contact": {
+    "homepage": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"  },
+  "license": "MIT",
+  "icon": "assets/walllanterns/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.thepoultryman.walllanterns.fabric.WallLanternsFabric"
+    ],
+    "client": [
+      "io.github.thepoultryman.walllanterns.fabric.client.WalllanternsFabricClient"
+    ]
+  },
+  "mixins": [
+    "walllanterns.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.4",
+    "java": ">=21"
+    ,"fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
