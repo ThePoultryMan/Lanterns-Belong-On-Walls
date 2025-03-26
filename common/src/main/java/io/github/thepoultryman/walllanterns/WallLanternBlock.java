@@ -1,6 +1,7 @@
 package io.github.thepoultryman.walllanterns;
 
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
+import io.github.thepoultryman.walllanterns.mixins.LanternBlockMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -23,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
-    private static final VoxelShape ON_WALL_SHAPE_NORTH = Shapes.or(Shapes.block(), Shapes.join(Block.box(6.9D, 8D, 6D, 9.1D, 15D, 16D), Block.box(6.9D, 8D, 6D, 9.1, 14D, 15D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_EAST = Shapes.or(Shapes.block(), Shapes.join(Block.box(0D, 8D, 6.9D, 10D, 15D, 9.1D), Block.box(1D, 8D, 6.9D, 10D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_SOUTH = Shapes.or(Shapes.block(), Shapes.join(Block.box(6.9D, 8D, 0D, 9.1D, 15D, 10D), Block.box(6.9D, 8D, 1D, 9.1D, 14D, 15D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_WEST = Shapes.or(Shapes.block(), Shapes.join(Block.box(6D, 8, 6.9D, 16D, 15D, 9.1D), Block.box(6D, 8D, 6.9D, 15D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
+    private static final VoxelShape ON_WALL_SHAPE_NORTH = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6.9D, 8D, 6D, 9.1D, 15D, 16D), Block.box(6.9D, 8D, 6D, 9.1, 14D, 15D), BooleanOp.ONLY_SECOND));
+    private static final VoxelShape ON_WALL_SHAPE_EAST = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(0D, 8D, 6.9D, 10D, 15D, 9.1D), Block.box(1D, 8D, 6.9D, 10D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
+    private static final VoxelShape ON_WALL_SHAPE_SOUTH = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6.9D, 8D, 0D, 9.1D, 15D, 10D), Block.box(6.9D, 8D, 1D, 9.1D, 14D, 15D), BooleanOp.ONLY_SECOND));
+    private static final VoxelShape ON_WALL_SHAPE_WEST = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6D, 8, 6.9D, 16D, 15D, 9.1D), Block.box(6D, 8D, 6.9D, 15D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
 
     public WallLanternBlock(Properties properties) {
         super(properties);
