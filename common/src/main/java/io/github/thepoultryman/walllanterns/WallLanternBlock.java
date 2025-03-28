@@ -1,7 +1,6 @@
 package io.github.thepoultryman.walllanterns;
 
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
-import io.github.thepoultryman.walllanterns.mixins.LanternBlockMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -24,10 +23,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
-    private static final VoxelShape ON_WALL_SHAPE_NORTH = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6.9D, 8D, 6D, 9.1D, 15D, 16D), Block.box(6.9D, 8D, 6D, 9.1, 14D, 15D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_EAST = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(0D, 8D, 6.9D, 10D, 15D, 9.1D), Block.box(1D, 8D, 6.9D, 10D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_SOUTH = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6.9D, 8D, 0D, 9.1D, 15D, 10D), Block.box(6.9D, 8D, 1D, 9.1D, 14D, 15D), BooleanOp.ONLY_SECOND));
-    private static final VoxelShape ON_WALL_SHAPE_WEST = Shapes.or(LanternBlockAccessor.getHangingShape(), Shapes.join(Block.box(6D, 8, 6.9D, 16D, 15D, 9.1D), Block.box(6D, 8D, 6.9D, 15D, 14D, 9.1D), BooleanOp.ONLY_SECOND));
+    private static final VoxelShape ON_WALL_SHAPE_NORTH = Shapes.or(LanternBlockAccessor.getStandingShape(),
+            Shapes.join(
+                    Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0.9375, 0.625, 0.875, 1), BooleanOp.OR),
+                    Shapes.box(0.4375, 0.6875, 0.3125, 0.5625, 0.8125, 0.9375), BooleanOp.OR
+            )
+    );
+    private static final VoxelShape ON_WALL_SHAPE_EAST = Shapes.or(LanternBlockAccessor.getStandingShape(),
+            Shapes.join(
+                    Shapes.join(Shapes.empty(), Shapes.box(0, 0.5625, 0.375, 0.0625, 0.875, 0.625), BooleanOp.OR),
+                    Shapes.box(0.0625, 0.6875, 0.4375, 0.6875, 0.8125, 0.5625), BooleanOp.OR
+            )
+    );
+    private static final VoxelShape ON_WALL_SHAPE_SOUTH = Shapes.or(LanternBlockAccessor.getStandingShape(),
+            Shapes.join(
+                    Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0, 0.625, 0.875, 0.0625), BooleanOp.OR),
+                    Shapes.box(0.4375, 0.6875, 0.0625, 0.5625, 0.8125, 0.6875), BooleanOp.OR
+            )
+    );
+    private static final VoxelShape ON_WALL_SHAPE_WEST = Shapes.or(LanternBlockAccessor.getStandingShape(),
+            Shapes.join(
+                    Shapes.join(Shapes.empty(), Shapes.box(0.9375, 0.5625, 0.375, 1, 0.875, 0.625), BooleanOp.OR),
+                    Shapes.box(0.3125, 0.6875, 0.4375, 0.9375, 0.8125, 0.5625), BooleanOp.OR
+            )
+    );
 
     public WallLanternBlock(Properties properties) {
         super(properties);

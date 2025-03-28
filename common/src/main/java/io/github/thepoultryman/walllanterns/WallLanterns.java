@@ -10,9 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public final class WallLanterns {
     public static final String MOD_ID = "walllanterns";

@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(LanternBlock.class)
 public interface LanternBlockAccessor {
-    @Accessor("HANGING_AABB")
-    static VoxelShape getHangingShape() {
+    @Accessor("AABB")
+    static VoxelShape getStandingShape() {
         throw new AssertionError();
     }
 }
