@@ -17,7 +17,7 @@ public class LanternBlockMixin {
     private void walllanterns$getStateForPlacement(BlockPlaceContext blockPlaceContext, CallbackInfoReturnable<BlockState> cir) {
         if (blockPlaceContext.getClickedFace().getAxis().isHorizontal()) {
             ResourceLocation key = BuiltInRegistries.BLOCK.getKey(((LanternBlock)(Object)this));
-            if (WallLanterns.WALL_LANTERNS.contains(key)) {
+            if (WallLanterns.WALL_LANTERNS.hasLantern(key)) {
                 cir.setReturnValue(WallLanterns.LANTERN_WRAPPERS.get(key).getWallLantern().getStateForPlacement(blockPlaceContext));
             }
         }

@@ -57,11 +57,11 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
-        BlockState blockState = this.getStateDefinition().any().setValue(
-                BlockStateProperties.WATERLOGGED,
+        BlockState blockState = this.getStateDefinition().any()
+                .setValue(BlockStateProperties.WATERLOGGED,
                 blockPlaceContext.getLevel()
-                        .getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER);
-        blockState.setValue(BlockStateProperties.HORIZONTAL_FACING, blockPlaceContext.getClickedFace());
+                        .getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER)
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, blockPlaceContext.getClickedFace());
 
         return blockState;
     }

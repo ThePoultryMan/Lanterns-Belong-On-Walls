@@ -1,6 +1,8 @@
 package io.github.thepoultryman.walllanterns.neoforge;
 
 import com.mojang.serialization.Codec;
+import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
+import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
 import io.github.thepoultryman.walllanterns.WallLanternBlock;
 import io.github.thepoultryman.walllanterns.WallLanternWrapper;
 import io.github.thepoultryman.walllanterns.WallLanterns;
@@ -29,31 +31,29 @@ public final class WallLanternsNeoForge {
         WallLanterns.init();
 
         modBus.register(EventHandler.class);
+        ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) -> {
+            event.addPack(WallLanterns.createRuntimePack());
+        });
     }
 
     private static class EventHandler {
         @SubscribeEvent
         private static void register(RegisterEvent event) {
             event.register(Registries.BLOCK, registry -> {
-                WallLanterns.WALL_LANTERNS.forEach((resourceLocation) -> {
-                    System.out.println("BOGGY: " + resourceLocation.toString());
+                WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
                     WallLanternBlock block = new WallLanternBlock(
                             Blocks.LANTERN.properties()
                     );
                     registry.register(
-                            dynamicResourceLocation(resourceLocation),
+                            WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation()),
                             block
                     );
                     WallLanterns.LANTERN_WRAPPERS.put(
-                            resourceLocation,
+                            wallLantern.getResourceLocation(),
                             new WallLanternWrapper(() -> block)
                     );
                 });
             });
-        }
-
-        private static ResourceLocation dynamicResourceLocation(ResourceLocation resourceLocation) {
-            return ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "wall_" + resourceLocation.getPath());
         }
     }
 }

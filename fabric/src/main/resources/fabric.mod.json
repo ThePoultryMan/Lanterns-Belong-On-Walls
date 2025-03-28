@@ -13,11 +13,13 @@
   "entrypoints": {
     "main": [
       "io.github.thepoultryman.walllanterns.fabric.WallLanternsFabric"
+    ],
+    "walllanterns": [
+      "io.github.thepoultryman.walllanterns.fabric.VanillaLanternEntrypoint"
     ]
   },
   "mixins": [
-    "walllanterns.mixins.json",
-    "walllanterns-fabric.mixins.json"
+    "walllanterns.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
