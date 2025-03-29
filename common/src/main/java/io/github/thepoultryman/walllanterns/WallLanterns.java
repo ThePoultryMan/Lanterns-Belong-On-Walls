@@ -48,7 +48,8 @@ public final class WallLanterns {
                                     .when(new JWhen().add(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST))
                                     .addModel(holderModel.clone().y(270)),
                             new JMultipart()
-                                    .when(new JWhen().add(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+                                    .when(new JWhen()
+                                            .add(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
                                             .add(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
                                             .add(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
                                             .add(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)
