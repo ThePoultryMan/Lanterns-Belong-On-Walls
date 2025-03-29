@@ -6,11 +6,11 @@ import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
 import io.github.thepoultryman.walllanterns.WallLanternBlock;
 import io.github.thepoultryman.walllanterns.WallLanternWrapper;
 import io.github.thepoultryman.walllanterns.WallLanterns;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -20,9 +20,6 @@ import java.util.List;
 
 @Mod(WallLanterns.MOD_ID)
 public final class WallLanternsNeoForge {
-    public static final ResourceKey<Registry<List<ResourceLocation>>> RESOURCE_KEY = ResourceKey.createRegistryKey(
-            ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID, "wall_lanterns")
-    );
 
     private static final Codec<List<ResourceLocation>> CODEC = ResourceLocation.CODEC.listOf();
 
@@ -41,13 +38,12 @@ public final class WallLanternsNeoForge {
         private static void register(RegisterEvent event) {
             event.register(Registries.BLOCK, registry -> {
                 WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
+                    ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation());
                     WallLanternBlock block = new WallLanternBlock(
-                            Blocks.LANTERN.properties()
+                            BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                    .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
                     );
-                    registry.register(
-                            WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation()),
-                            block
-                    );
+                    registry.register(lanternLocation, block);
                     WallLanterns.LANTERN_WRAPPERS.put(
                             wallLantern.getResourceLocation(),
                             new WallLanternWrapper(() -> block)
