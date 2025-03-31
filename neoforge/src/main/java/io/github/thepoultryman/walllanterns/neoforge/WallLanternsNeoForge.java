@@ -22,41 +22,46 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 @Mod(WallLanterns.MOD_ID)
 public final class WallLanternsNeoForge {
     public WallLanternsNeoForge(IEventBus modBus) {
-        // Run our common setup.
-        WallLanterns.WALL_LANTERNS.add(new WallLantern(
-                WallLantern.Type.StandardCutout,
-                ResourceLocation.parse("minecraft:lantern"))
-        );
-        WallLanterns.WALL_LANTERNS.add(new WallLantern(
-                WallLantern.Type.StandardCutout,
-                ResourceLocation.parse("minecraft:soul_lantern"))
-        );
-
-        modBus.register(EventHandler.class);
+        modBus.addListener((RegisterEvent event) -> {
+            if (event.getRegistryKey().equals(Registries.BLOCK)) {
+                modBus.post(new WallLanternsEvent());
+                event.register(Registries.BLOCK, registry ->
+                        WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
+                            ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(
+                                    wallLantern.getResourceLocation()
+                            );
+                            WallLanternBlock block = new WallLanternBlock(
+                                    BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                            .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                            );
+                            registry.register(lanternLocation, block);
+                            WallLanterns.LANTERN_WRAPPERS.put(
+                                    wallLantern.getResourceLocation(),
+                                    new WallLanternWrapper(
+                                            () -> block,
+                                            wallLantern.getType() == WallLantern.Type.StandardCutout
+                                    )
+                            );
+                        })
+                );
+            }
+        });
         ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) ->
                 event.addPack(WallLanterns.createRuntimePack())
         );
+        modBus.register(EventHandler.class);
     }
 
     private static class EventHandler {
         @SubscribeEvent
-        private static void register(RegisterEvent event) {
-            event.register(Registries.BLOCK, registry ->
-                    WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
-                        ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation());
-                        WallLanternBlock block = new WallLanternBlock(
-                                BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
-                        );
-                        registry.register(lanternLocation, block);
-                        WallLanterns.LANTERN_WRAPPERS.put(
-                                wallLantern.getResourceLocation(),
-                                new WallLanternWrapper(
-                                        () -> block,
-                                        wallLantern.getType() == WallLantern.Type.StandardCutout
-                                )
-                        );
-                    })
+        private static void onWallLanternsEvent(WallLanternsEvent event) {
+            event.addLantern(new WallLantern(
+                    WallLantern.Type.StandardCutout,
+                    ResourceLocation.parse("minecraft:lantern"))
+            );
+            event.addLantern(new WallLantern(
+                    WallLantern.Type.StandardCutout,
+                    ResourceLocation.parse("minecraft:soul_lantern"))
             );
         }
 
