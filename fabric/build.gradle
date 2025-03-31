@@ -35,7 +35,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
-    modImplementation(files("[REDACTED LOCAL PATH]"))
+    modImplementation("maven.modrinth:arrp-but-different:${rootProject.arrp_but_different_version}+${rootProject.minecraft_version}-Fabric")
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forge_config_api_port_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
