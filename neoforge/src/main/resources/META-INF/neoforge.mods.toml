@@ -27,6 +27,10 @@ versionRange = "[1.21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.walllanterns]]
+modId = "advanced_runtime_resource_packs_but_different"
+type = "required"
+versionRange = "[${arrp_but_different_version},)"
 
 [[mixins]]
 config = "walllanterns.mixins.json"

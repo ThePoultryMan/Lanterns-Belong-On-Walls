@@ -27,10 +27,8 @@
   "depends": {
     "fabricloader": ">=0.16.10",
     "minecraft": "~1.21.4",
-    "java": ">=21"
-    ,"fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "java": ">=21",
+    "fabric-api": "*",
+    "advanced_runtime_resource_packs_but_different": ">=${arrp_but_different_version}"
   }
 }
