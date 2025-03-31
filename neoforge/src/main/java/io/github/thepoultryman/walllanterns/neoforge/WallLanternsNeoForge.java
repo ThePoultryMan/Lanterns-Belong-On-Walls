@@ -33,35 +33,35 @@ public final class WallLanternsNeoForge {
         );
 
         modBus.register(EventHandler.class);
-        ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) -> {
-            event.addPack(WallLanterns.createRuntimePack());
-        });
+        ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) ->
+                event.addPack(WallLanterns.createRuntimePack())
+        );
     }
 
     private static class EventHandler {
         @SubscribeEvent
         private static void register(RegisterEvent event) {
-            event.register(Registries.BLOCK, registry -> {
-                WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
-                    ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation());
-                    WallLanternBlock block = new WallLanternBlock(
-                            BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                    .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
-                    );
-                    registry.register(lanternLocation, block);
-                    WallLanterns.LANTERN_WRAPPERS.put(
-                            wallLantern.getResourceLocation(),
-                            new WallLanternWrapper(
-                                    () -> block,
-                                    wallLantern.getType() == WallLantern.Type.StandardCutout
-                            )
-                    );
-                });
-            });
+            event.register(Registries.BLOCK, registry ->
+                    WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
+                        ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation());
+                        WallLanternBlock block = new WallLanternBlock(
+                                BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                        );
+                        registry.register(lanternLocation, block);
+                        WallLanterns.LANTERN_WRAPPERS.put(
+                                wallLantern.getResourceLocation(),
+                                new WallLanternWrapper(
+                                        () -> block,
+                                        wallLantern.getType() == WallLantern.Type.StandardCutout
+                                )
+                        );
+                    })
+            );
         }
 
         @SubscribeEvent
-        private static void onClientSetup(FMLClientSetupEvent event) {
+        private static void onClientSetup(FMLClientSetupEvent ignored) {
             WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
                 if (wallLanternWrapper.useCutoutLayer()) {
                     ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), RenderType.CUTOUT);

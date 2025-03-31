@@ -15,9 +15,7 @@ public final class WallLanternsFabric implements ModInitializer {
     public void onInitialize() {
         WallLanternsRegistry wallLanternsRegistry = new WallLanternsRegistry();
         FabricLoader.getInstance().getEntrypoints(WallLanterns.MOD_ID, WallLanternsEntrypoint.class).forEach(
-                (entrypoint) -> {
-                    entrypoint.registerLanterns(wallLanternsRegistry);
-                }
+                (entrypoint) -> entrypoint.registerLanterns(wallLanternsRegistry)
         );
         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
             WallLanternBlock block = new WallLanternBlock(
@@ -35,8 +33,6 @@ public final class WallLanternsFabric implements ModInitializer {
         });
 
 
-        ARRPEvent.BEFORE_USER.register(resources -> {
-            resources.add(WallLanterns.createRuntimePack());
-        });
+        ARRPEvent.BEFORE_USER.register(resources -> resources.add(WallLanterns.createRuntimePack()));
     }
 }

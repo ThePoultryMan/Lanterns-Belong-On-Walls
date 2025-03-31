@@ -11,8 +11,9 @@ import net.minecraft.client.renderer.RenderType;
 public class WallLanternsFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
-            BlockRenderLayerMap.INSTANCE.putBlock(wallLanternWrapper.getWallLantern(), RenderType.cutout());
-        });
+        WallLanterns.LANTERN_WRAPPERS.forEach(
+                (resourceLocation, wallLanternWrapper) ->
+                        BlockRenderLayerMap.INSTANCE.putBlock(wallLanternWrapper.getWallLantern(), RenderType.cutout())
+        );
     }
 }
