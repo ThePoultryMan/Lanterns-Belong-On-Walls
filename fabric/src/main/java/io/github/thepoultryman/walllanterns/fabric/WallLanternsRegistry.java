@@ -8,4 +8,8 @@ public class WallLanternsRegistry {
     public void registerLantern(ResourceLocation resourceLocation) {
         WallLanterns.WALL_LANTERNS.add(new WallLantern(resourceLocation));
     }
+
+    public void registerLantern(WallLantern.Type type, ResourceLocation resourceLocation) {
+        WallLanterns.WALL_LANTERNS.add(new WallLantern(type, resourceLocation));
+    }
 }
