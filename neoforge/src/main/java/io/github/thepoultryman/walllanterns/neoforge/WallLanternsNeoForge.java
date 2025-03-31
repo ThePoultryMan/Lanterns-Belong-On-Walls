@@ -1,11 +1,13 @@
 package io.github.thepoultryman.walllanterns.neoforge;
 
-import com.mojang.serialization.Codec;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
+import io.github.thepoultryman.walllanterns.WallLantern;
 import io.github.thepoultryman.walllanterns.WallLanternBlock;
 import io.github.thepoultryman.walllanterns.WallLanternWrapper;
 import io.github.thepoultryman.walllanterns.WallLanterns;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,18 +16,21 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-
-import java.util.List;
 
 @Mod(WallLanterns.MOD_ID)
 public final class WallLanternsNeoForge {
-
-    private static final Codec<List<ResourceLocation>> CODEC = ResourceLocation.CODEC.listOf();
-
     public WallLanternsNeoForge(IEventBus modBus) {
         // Run our common setup.
-        WallLanterns.init();
+        WallLanterns.WALL_LANTERNS.add(new WallLantern(
+                WallLantern.Type.StandardCutout,
+                ResourceLocation.parse("minecraft:lantern"))
+        );
+        WallLanterns.WALL_LANTERNS.add(new WallLantern(
+                WallLantern.Type.StandardCutout,
+                ResourceLocation.parse("minecraft:soul_lantern"))
+        );
 
         modBus.register(EventHandler.class);
         ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) -> {
@@ -46,9 +51,21 @@ public final class WallLanternsNeoForge {
                     registry.register(lanternLocation, block);
                     WallLanterns.LANTERN_WRAPPERS.put(
                             wallLantern.getResourceLocation(),
-                            new WallLanternWrapper(() -> block)
+                            new WallLanternWrapper(
+                                    () -> block,
+                                    wallLantern.getType() == WallLantern.Type.StandardCutout
+                            )
                     );
                 });
+            });
+        }
+
+        @SubscribeEvent
+        private static void onClientSetup(FMLClientSetupEvent event) {
+            WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
+                if (wallLanternWrapper.useCutoutLayer()) {
+                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), RenderType.CUTOUT);
+                }
             });
         }
     }

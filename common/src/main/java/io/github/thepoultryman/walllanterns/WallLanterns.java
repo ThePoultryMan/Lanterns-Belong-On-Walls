@@ -18,11 +18,6 @@ public final class WallLanterns {
     public static final WallLanternList WALL_LANTERNS = new WallLanternList();
     public static final HashMap<ResourceLocation, WallLanternWrapper> LANTERN_WRAPPERS = new HashMap<>();
 
-    public static void init() {
-        WALL_LANTERNS.add(new WallLantern(ResourceLocation.parse("minecraft:lantern")));
-        WALL_LANTERNS.add(new WallLantern(ResourceLocation.parse("minecraft:soul_lantern")));
-    }
-
     public static PackResources createRuntimePack() {
         RuntimeResourcePack pack = RuntimeResourcePack.create(ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID, "walllanterns"));
 

@@ -6,9 +6,13 @@ public class WallLantern {
     private final Type type;
     private final ResourceLocation resourceLocation;
 
-    public WallLantern(ResourceLocation block) {
-        this.type = Type.Standard;
-        this.resourceLocation = block;
+    public WallLantern(ResourceLocation resourceLocation) {
+        this(Type.Standard, resourceLocation);
+    }
+
+    public WallLantern(Type type, ResourceLocation resourceLocation) {
+        this.type = type;
+        this.resourceLocation = resourceLocation;
     }
 
     public Type getType() {
@@ -20,6 +24,7 @@ public class WallLantern {
     }
 
     public enum Type {
-        Standard
+        Standard,
+        StandardCutout
     }
 }
