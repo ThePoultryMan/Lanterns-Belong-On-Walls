@@ -1,6 +1,7 @@
 package io.github.thepoultryman.walllanterns;
 
 import io.github.thepoultryman.arrp_but_different.api.RuntimeResourcePack;
+import io.github.thepoultryman.arrp_but_different.json.JTag;
 import io.github.thepoultryman.arrp_but_different.json.state.JBlockModel;
 import io.github.thepoultryman.arrp_but_different.json.state.JMultipart;
 import io.github.thepoultryman.arrp_but_different.json.state.JState;
@@ -20,6 +21,7 @@ public final class WallLanterns {
 
     public static PackResources createRuntimePack() {
         RuntimeResourcePack pack = RuntimeResourcePack.create(ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID, "walllanterns"));
+        JTag mineableWithPickaxe = new JTag();
 
         WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
             ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath("walllanterns_dynamic",
@@ -52,7 +54,9 @@ public final class WallLanterns {
                                     .addModel(lanternModel)
                     )
             );
+            mineableWithPickaxe.add(modelLocation);
         });
+        pack.addTag(ResourceLocation.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
         return pack;
     }
 
