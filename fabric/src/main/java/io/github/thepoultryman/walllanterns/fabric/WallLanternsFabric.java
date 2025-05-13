@@ -8,6 +8,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 
 public final class WallLanternsFabric implements ModInitializer {
@@ -18,12 +21,17 @@ public final class WallLanternsFabric implements ModInitializer {
                 (entrypoint) -> entrypoint.registerLanterns(wallLanternsRegistry)
         );
         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
+            ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(
+                    wallLantern.getResourceLocation()
+            );
             WallLanternBlock block = new WallLanternBlock(
                     Blocks.LANTERN.properties()
+                            .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                    wallLantern.getBlockItem()
             );
             Registry.register(
                     BuiltInRegistries.BLOCK,
-                    WallLanterns.dynamicResourceLocation(wallLantern.getResourceLocation()),
+                    lanternLocation,
                     block
             );
             WallLanterns.LANTERN_WRAPPERS.put(
@@ -31,7 +39,6 @@ public final class WallLanternsFabric implements ModInitializer {
                     new WallLanternWrapper(() -> block)
             );
         });
-
 
         ARRPEvent.BEFORE_USER.register(resources -> resources.add(WallLanterns.createRuntimePack()));
     }

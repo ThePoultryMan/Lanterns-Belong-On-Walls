@@ -2,6 +2,8 @@ package io.github.thepoultryman.walllanterns;
 
 import io.github.thepoultryman.arrp_but_different.api.RuntimeResourcePack;
 import io.github.thepoultryman.arrp_but_different.json.JTag;
+import io.github.thepoultryman.arrp_but_different.json.loot.JLootTable;
+import io.github.thepoultryman.arrp_but_different.json.loot.JPool;
 import io.github.thepoultryman.arrp_but_different.json.state.JBlockModel;
 import io.github.thepoultryman.arrp_but_different.json.state.JMultipart;
 import io.github.thepoultryman.arrp_but_different.json.state.JState;
@@ -10,6 +12,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.HashMap;
 
@@ -54,6 +59,22 @@ public final class WallLanterns {
                                     .addModel(lanternModel)
                     )
             );
+
+            pack.addLootTable(ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "blocks/" + modelLocation.getPath()),
+                    new JLootTable("minecraft:block")
+                            .pool(
+                                    new JPool()
+                                            .bonusRolls(ConstantValue.exactly(0.0f))
+                                            .condition(
+                                                    ExplosionCondition.survivesExplosion().build()
+                                            )
+                                            .entry(
+                                                    LootItem.lootTableItem(wallLanternWrapper.getWallLantern().asItem()).build()
+                                            )
+                                            .rolls(ConstantValue.exactly(1.0f))
+                            )
+            );
+
             mineableWithPickaxe.add(modelLocation);
         });
         pack.addTag(ResourceLocation.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
@@ -61,6 +82,10 @@ public final class WallLanterns {
     }
 
     public static ResourceLocation dynamicResourceLocation(ResourceLocation resourceLocation) {
-        return ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "wall_" + resourceLocation.getPath());
+        return dynamicResourceLocation(resourceLocation.getPath());
+    }
+
+    public static ResourceLocation dynamicResourceLocation(String path) {
+        return ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "wall_" + path);
     }
 }

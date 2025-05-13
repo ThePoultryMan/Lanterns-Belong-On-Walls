@@ -4,6 +4,7 @@ import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -48,10 +49,13 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
             )
     );
 
-    public WallLanternBlock(Properties properties) {
+    private final Item blockItem;
+
+    public WallLanternBlock(Properties properties, Item blockItem) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+        this.blockItem = blockItem;
     }
 
     @Override
@@ -96,5 +100,10 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
             case WEST -> ON_WALL_SHAPE_WEST;
             default -> ON_WALL_SHAPE_NORTH;
         };
+    }
+
+    @Override
+    public @NotNull Item asItem() {
+        return this.blockItem;
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
@@ -32,7 +33,8 @@ public final class WallLanternsNeoForge {
                             );
                             WallLanternBlock block = new WallLanternBlock(
                                     BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                            .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                                            .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                                    wallLantern.getBlockItem()
                             );
                             registry.register(lanternLocation, block);
                             WallLanterns.LANTERN_WRAPPERS.put(
@@ -57,12 +59,14 @@ public final class WallLanternsNeoForge {
         private static void onWallLanternsEvent(WallLanternsEvent event) {
             event.addLantern(new WallLantern(
                     WallLantern.Type.StandardCutout,
-                    ResourceLocation.parse("minecraft:lantern"))
-            );
+                    ResourceLocation.withDefaultNamespace("lantern"),
+                    Items.LANTERN
+            ));
             event.addLantern(new WallLantern(
                     WallLantern.Type.StandardCutout,
-                    ResourceLocation.parse("minecraft:soul_lantern"))
-            );
+                    ResourceLocation.withDefaultNamespace("soul_lantern"),
+                    Items.SOUL_LANTERN
+            ));
         }
 
         @SubscribeEvent
