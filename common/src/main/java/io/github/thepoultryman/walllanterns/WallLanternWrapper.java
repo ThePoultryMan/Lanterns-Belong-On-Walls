@@ -4,22 +4,22 @@ import java.util.function.Supplier;
 
 public class WallLanternWrapper {
     private final Supplier<WallLanternBlock> wallLanternSupplier;
-    private final boolean useCutoutLayer;
+    private final WallLanternOptions options;
 
     public WallLanternWrapper(Supplier<WallLanternBlock> wallLanternSupplier) {
-        this(wallLanternSupplier, false);
+        this(wallLanternSupplier, WallLanternOptions.create());
     }
 
-    public WallLanternWrapper(Supplier<WallLanternBlock> wallLanternSupplier, boolean useCutoutLayer) {
+    public WallLanternWrapper(Supplier<WallLanternBlock> wallLanternSupplier, WallLanternOptions options) {
         this.wallLanternSupplier = wallLanternSupplier;
-        this.useCutoutLayer = useCutoutLayer;
+        this.options = options;
     }
 
     public WallLanternBlock getWallLantern() {
         return this.wallLanternSupplier.get();
     }
 
-    public boolean useCutoutLayer() {
-        return this.useCutoutLayer;
+    public WallLanternOptions getOptions() {
+        return this.options;
     }
 }

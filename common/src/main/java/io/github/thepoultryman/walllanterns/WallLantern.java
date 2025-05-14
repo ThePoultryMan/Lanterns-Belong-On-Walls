@@ -4,22 +4,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 public class WallLantern {
-    private final Type type;
+    private final WallLanternOptions options;
     private final ResourceLocation resourceLocation;
     private final Item blockItem;
 
     public WallLantern(ResourceLocation resourceLocation, Item blockItem) {
-        this(Type.Standard, resourceLocation, blockItem);
+        this(WallLanternOptions.create(), resourceLocation, blockItem);
     }
 
-    public WallLantern(Type type, ResourceLocation resourceLocation, Item blockItem) {
-        this.type = type;
+    public WallLantern(WallLanternOptions options, ResourceLocation resourceLocation, Item blockItem) {
+        this.options = options;
         this.resourceLocation = resourceLocation;
         this.blockItem = blockItem;
     }
 
-    public Type getType() {
-        return this.type;
+    public WallLanternOptions getOptions() {
+        return this.options;
     }
 
     public Item getBlockItem() {
@@ -28,10 +28,5 @@ public class WallLantern {
 
     public ResourceLocation getResourceLocation() {
         return this.resourceLocation;
-    }
-
-    public enum Type {
-        Standard,
-        StandardCutout
     }
 }
