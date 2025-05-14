@@ -24,38 +24,44 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
-    private static final VoxelShape ON_WALL_SHAPE_NORTH = Shapes.or(LanternBlockAccessor.getStandingShape(),
-            Shapes.join(
-                    Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0.9375, 0.625, 0.875, 1), BooleanOp.OR),
-                    Shapes.box(0.4375, 0.6875, 0.3125, 0.5625, 0.8125, 0.9375), BooleanOp.OR
-            )
-    );
-    private static final VoxelShape ON_WALL_SHAPE_EAST = Shapes.or(LanternBlockAccessor.getStandingShape(),
-            Shapes.join(
-                    Shapes.join(Shapes.empty(), Shapes.box(0, 0.5625, 0.375, 0.0625, 0.875, 0.625), BooleanOp.OR),
-                    Shapes.box(0.0625, 0.6875, 0.4375, 0.6875, 0.8125, 0.5625), BooleanOp.OR
-            )
-    );
-    private static final VoxelShape ON_WALL_SHAPE_SOUTH = Shapes.or(LanternBlockAccessor.getStandingShape(),
-            Shapes.join(
-                    Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0, 0.625, 0.875, 0.0625), BooleanOp.OR),
-                    Shapes.box(0.4375, 0.6875, 0.0625, 0.5625, 0.8125, 0.6875), BooleanOp.OR
-            )
-    );
-    private static final VoxelShape ON_WALL_SHAPE_WEST = Shapes.or(LanternBlockAccessor.getStandingShape(),
-            Shapes.join(
-                    Shapes.join(Shapes.empty(), Shapes.box(0.9375, 0.5625, 0.375, 1, 0.875, 0.625), BooleanOp.OR),
-                    Shapes.box(0.3125, 0.6875, 0.4375, 0.9375, 0.8125, 0.5625), BooleanOp.OR
-            )
-    );
+    private final VoxelShape onWallShapeNorth;
+    private final VoxelShape onWallShapeEast;
+    private final VoxelShape onWallShapeSouth;
+    private final VoxelShape onWallShapeWest;
 
     private final Item blockItem;
 
-    public WallLanternBlock(Properties properties, Item blockItem) {
+    public WallLanternBlock(Properties properties, Item blockItem, WallLanternOptions options) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         this.blockItem = blockItem;
+
+        VoxelShape baseLanternShape = options.getShape() != null ? options.getShape() : LanternBlockAccessor.getStandingShape();
+        this.onWallShapeNorth = Shapes.or(baseLanternShape,
+                Shapes.join(
+                        Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0.9375, 0.625, 0.875, 1), BooleanOp.OR),
+                        Shapes.box(0.4375, 0.6875, 0.3125, 0.5625, 0.8125, 0.9375), BooleanOp.OR
+                )
+        );
+        this.onWallShapeEast = Shapes.or(baseLanternShape,
+                Shapes.join(
+                        Shapes.join(Shapes.empty(), Shapes.box(0, 0.5625, 0.375, 0.0625, 0.875, 0.625), BooleanOp.OR),
+                        Shapes.box(0.0625, 0.6875, 0.4375, 0.6875, 0.8125, 0.5625), BooleanOp.OR
+                )
+        );
+        this.onWallShapeSouth = Shapes.or(baseLanternShape,
+                Shapes.join(
+                        Shapes.join(Shapes.empty(), Shapes.box(0.375, 0.5625, 0, 0.625, 0.875, 0.0625), BooleanOp.OR),
+                        Shapes.box(0.4375, 0.6875, 0.0625, 0.5625, 0.8125, 0.6875), BooleanOp.OR
+                )
+        );
+        this.onWallShapeWest = Shapes.or(baseLanternShape,
+                Shapes.join(
+                        Shapes.join(Shapes.empty(), Shapes.box(0.9375, 0.5625, 0.375, 1, 0.875, 0.625), BooleanOp.OR),
+                        Shapes.box(0.3125, 0.6875, 0.4375, 0.9375, 0.8125, 0.5625), BooleanOp.OR
+                )
+        );
     }
 
     @Override
@@ -95,10 +101,10 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     protected @NotNull VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
-            case EAST -> ON_WALL_SHAPE_EAST;
-            case SOUTH -> ON_WALL_SHAPE_SOUTH;
-            case WEST -> ON_WALL_SHAPE_WEST;
-            default -> ON_WALL_SHAPE_NORTH;
+            case EAST -> onWallShapeEast;
+            case SOUTH -> onWallShapeSouth;
+            case WEST -> onWallShapeWest;
+            default -> onWallShapeNorth;
         };
     }
 

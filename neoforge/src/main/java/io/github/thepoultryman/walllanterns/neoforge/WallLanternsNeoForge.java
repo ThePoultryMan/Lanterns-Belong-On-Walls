@@ -31,7 +31,8 @@ public final class WallLanternsNeoForge {
                             WallLanternBlock block = new WallLanternBlock(
                                     BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                                             .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                                    wallLantern.getBlockItem()
+                                    wallLantern.getBlockItem(),
+                                    wallLantern.getOptions()
                             );
                             registry.register(lanternLocation, block);
                             WallLanterns.LANTERN_WRAPPERS.put(

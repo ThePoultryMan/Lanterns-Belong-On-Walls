@@ -27,7 +27,8 @@ public final class WallLanternsFabric implements ModInitializer {
             WallLanternBlock block = new WallLanternBlock(
                     Blocks.LANTERN.properties()
                             .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                    wallLantern.getBlockItem()
+                    wallLantern.getBlockItem(),
+                    wallLantern.getOptions()
             );
             Registry.register(
                     BuiltInRegistries.BLOCK,
