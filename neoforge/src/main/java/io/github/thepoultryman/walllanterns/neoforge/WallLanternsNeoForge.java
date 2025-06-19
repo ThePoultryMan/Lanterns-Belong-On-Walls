@@ -4,7 +4,7 @@ import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
 import io.github.thepoultryman.walllanterns.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -71,7 +71,7 @@ public final class WallLanternsNeoForge {
         private static void onClientSetup(FMLClientSetupEvent ignored) {
             WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
                 if (wallLanternWrapper.getOptions().isCutoutLayer()) {
-                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), RenderType.CUTOUT);
+                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), ChunkSectionLayer.CUTOUT);
                 }
             });
         }

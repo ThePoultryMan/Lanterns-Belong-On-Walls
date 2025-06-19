@@ -37,7 +37,7 @@ public final class WallLanternsFabric implements ModInitializer {
             );
             WallLanterns.LANTERN_WRAPPERS.put(
                     wallLantern.getResourceLocation(),
-                    new WallLanternWrapper(() -> block)
+                    new WallLanternWrapper(() -> block, wallLantern.getOptions())
             );
         });
 

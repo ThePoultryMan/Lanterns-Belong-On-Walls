@@ -23,7 +23,7 @@ side = "BOTH"
 [[dependencies.walllanterns]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.5,)"
+versionRange = "[1.21.6,)"
 ordering = "NONE"
 side = "BOTH"
 
