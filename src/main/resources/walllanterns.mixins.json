@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.thepoultryman.walllanterns.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "LanternBlockAccessor",
+    "LanternBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

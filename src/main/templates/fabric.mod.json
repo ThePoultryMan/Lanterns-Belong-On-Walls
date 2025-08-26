@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_author}"],
+  "contact": {
+    "homepage": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"  },
+  "license": "MIT",
+  "icon": "assets/walllanterns/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.thepoultryman.walllanterns.fabric.WallLanternsFabric"
+    ],
+    "client": [
+      "io.github.thepoultryman.walllanterns.fabric.WallLanternsFabricClient"
+    ],
+    "walllanterns": [
+      "io.github.thepoultryman.walllanterns.fabric.VanillaLanternEntrypoint"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": ">=1.21.6",
+    "java": ">=21",
+    "fabric-api": "*",
+    "advanced_runtime_resource_packs_but_different": ">=${arrp_but_different_version}"
+  }
+}
