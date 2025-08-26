@@ -142,7 +142,7 @@ publishMods {
     }
     displayName = "Lanterns Belong on Walls ${property("mod.version")}-${loader} for $versionRange"
     version = "${property("mod.version")}+${minecraft}-${loader}"
-    type = BETA
+    type = STABLE
     if (modstitch.isLoom) {
         modLoaders.addAll("fabric", "quilt")
     } else {
