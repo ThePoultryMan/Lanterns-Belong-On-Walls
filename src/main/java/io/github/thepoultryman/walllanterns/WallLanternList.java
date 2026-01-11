@@ -1,6 +1,6 @@
 package io.github.thepoultryman.walllanterns;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.function.Consumer;
 public class WallLanternList {
     private final List<WallLantern> list = new ArrayList<>();
 
-    public boolean hasLantern(ResourceLocation resourceLocation) {
+    public boolean hasLantern(Identifier resourceLocation) {
         for (WallLantern wallLantern : list) {
-            if (wallLantern.getResourceLocation().equals(resourceLocation)) {
+            if (wallLantern.identifier().equals(resourceLocation)) {
                 return true;
             }
         }

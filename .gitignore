@@ -31,3 +31,8 @@ bin/
 # fabric
 
 run/
+
+# dev env
+
+.envrc
+.direnv

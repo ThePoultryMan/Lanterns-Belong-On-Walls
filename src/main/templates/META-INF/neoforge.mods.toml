@@ -23,7 +23,7 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.6,)"
+versionRange = "[${min_minecraft_version},${minecraft_upper_bound})"
 ordering = "NONE"
 side = "BOTH"
 

@@ -22,7 +22,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version("0.7+")
+    id("dev.kikugie.stonecutter") version("0.8.2")
 }
 
 stonecutter {
@@ -36,14 +36,14 @@ stonecutter {
         }
 
         // Configure your targets here!
-        listOf("1.21.6").forEach {
+        listOf("1.21.6", "1.21.11").forEach {
             mc(it)
         }
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
-        vcsVersion = "1.21.6-neoforge"
+        vcsVersion = "1.21.11-neoforge"
     }
 }
 
-rootProject.name = "ARRP But Different"
+rootProject.name = "Lanterns Belong on Walls"

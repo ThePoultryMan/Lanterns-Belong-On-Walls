@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "walllanterns:block/wall_lantern_holder"
+    },
+    "facing=east": {
+      "model": "walllanterns:block/wall_lantern_holder",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "walllanterns:block/wall_lantern_holder",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "walllanterns:block/wall_lantern_holder",
+      "y": 270
+    }
+  }
+}

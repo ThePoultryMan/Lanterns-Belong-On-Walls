@@ -1,5 +1,6 @@
-package io.github.thepoultryman.walllanterns;
+package io.github.thepoultryman.walllanterns.block;
 
+import io.github.thepoultryman.walllanterns.WallLanternOptions;
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -8,13 +8,17 @@ import io.github.thepoultryman.arrp_but_different.json.state.JBlockModel;
 import io.github.thepoultryman.arrp_but_different.json.state.JMultipart;
 import io.github.thepoultryman.arrp_but_different.json.state.JState;
 import io.github.thepoultryman.arrp_but_different.json.state.JWhen;
+import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
+import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -22,20 +26,27 @@ public final class WallLanterns {
     public static final String MOD_ID = "walllanterns";
 
     public static final WallLanternList WALL_LANTERNS = new WallLanternList();
-    public static final HashMap<ResourceLocation, WallLanternWrapper> LANTERN_WRAPPERS = new HashMap<>();
+    public static final HashMap<Identifier, WallLanternWrapper> LANTERN_WRAPPERS = new HashMap<>();
+    public static final Identifier COMPAT_LANTERN_ID = Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID,
+            "compatibility_lantern"
+    );
+    public static RegistryHolder<CompatibilityWallLantern> COMPATIBILITY_WALL_LANTERN;
+    public static RegistryHolder<BlockEntityType<@NotNull CompatibilityLanternEntity>> LANTERN_ENTITY_TYPE;
 
     public static PackResources createRuntimePack() {
-        RuntimeResourcePack pack = RuntimeResourcePack.create(ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID, "walllanterns"));
+        RuntimeResourcePack pack = RuntimeResourcePack.create(
+                Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID, "walllanterns"));
         JTag mineableWithPickaxe = new JTag();
 
         WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
-            ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath("walllanterns_dynamic",
-                    "wall_" + resourceLocation.getPath());
-            ResourceLocation blockLocation = resourceLocation.withPath("block/" + resourceLocation.getPath());
+            Identifier modelLocation = Identifier.fromNamespaceAndPath("walllanterns_dynamic",
+                    "wall_" + resourceLocation.getPath()
+            );
+            Identifier blockLocation = resourceLocation.withPath("block/" + resourceLocation.getPath());
 
             JBlockModel lanternModel = new JBlockModel(blockLocation);
             JBlockModel holderModel = new JBlockModel(
-                    ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID, "block/wall_lantern_holder"));
+                    Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID, "block/wall_lantern_holder"));
             pack.addBlockSate(modelLocation, new JState()
                     .addAll(new JMultipart()
                                     .when(new JWhen().add(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH))
@@ -60,7 +71,9 @@ public final class WallLanterns {
                     )
             );
 
-            pack.addLootTable(ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "blocks/" + modelLocation.getPath()),
+            pack.addLootTable(Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic",
+                            "blocks/" + modelLocation.getPath()
+                    ),
                     new JLootTable("minecraft:block")
                             .pool(
                                     new JPool()
@@ -69,7 +82,8 @@ public final class WallLanterns {
                                                     ExplosionCondition.survivesExplosion().build()
                                             )
                                             .entry(
-                                                    LootItem.lootTableItem(wallLanternWrapper.getWallLantern().asItem()).build()
+                                                    LootItem.lootTableItem(wallLanternWrapper.getWallLantern().asItem())
+                                                            .build()
                                             )
                                             .rolls(ConstantValue.exactly(1.0f))
                             )
@@ -77,15 +91,15 @@ public final class WallLanterns {
 
             mineableWithPickaxe.add(modelLocation);
         });
-        pack.addTag(ResourceLocation.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
+        pack.addTag(Identifier.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
         return pack;
     }
 
-    public static ResourceLocation dynamicResourceLocation(ResourceLocation resourceLocation) {
-        return dynamicResourceLocation(resourceLocation.getPath());
+    public static Identifier dynamicIdentifier(Identifier resourceLocation) {
+        return dynamicIdentifier(resourceLocation.getPath());
     }
 
-    public static ResourceLocation dynamicResourceLocation(String path) {
-        return ResourceLocation.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "wall_" + path);
+    public static Identifier dynamicIdentifier(String path) {
+        return Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID + "_dynamic", "wall_" + path);
     }
 }

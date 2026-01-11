@@ -4,43 +4,75 @@ package io.github.thepoultryman.walllanterns.neoforge;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
 import io.github.thepoultryman.walllanterns.*;
+import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
+import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
+import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(WallLanterns.MOD_ID)
 public final class WallLanternsNeoForge {
+    public static final DeferredRegister<@NotNull BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(
+            Registries.BLOCK_ENTITY_TYPE, WallLanterns.MOD_ID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(WallLanterns.MOD_ID);
+
     public WallLanternsNeoForge(IEventBus modBus) {
+        WallLanterns.LANTERN_ENTITY_TYPE = new RegistryHolder<>(
+                WallLanternsNeoForge.BLOCK_ENTITY_TYPES.register(WallLanterns.COMPAT_LANTERN_ID.getPath(),
+                        () -> new BlockEntityType<>(CompatibilityLanternEntity::new,
+                                false, WallLanterns.COMPATIBILITY_WALL_LANTERN.get()
+                        )
+                )
+        );
+        WallLanterns.COMPATIBILITY_WALL_LANTERN = new RegistryHolder<>(
+                WallLanternsNeoForge.BLOCKS.register(WallLanterns.COMPAT_LANTERN_ID.getPath(),
+                        () -> new CompatibilityWallLantern(
+                                BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                        .setId(ResourceKey.create(Registries.BLOCK,
+                                                WallLanterns.COMPAT_LANTERN_ID
+                                        )),
+                                WallLanternOptions.create()
+                        )
+                )
+        );
+
+        BLOCK_ENTITY_TYPES.register(modBus);
+        BLOCKS.register(modBus);
         modBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(Registries.BLOCK)) {
                 modBus.post(new WallLanternsEvent());
+
                 event.register(Registries.BLOCK, registry ->
                         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
-                            ResourceLocation lanternLocation = WallLanterns.dynamicResourceLocation(
-                                    wallLantern.getResourceLocation()
+                            Identifier lanternLocation = WallLanterns.dynamicIdentifier(
+                                    wallLantern.identifier()
                             );
                             WallLanternBlock block = new WallLanternBlock(
                                     BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                                             .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                                    wallLantern.getBlockItem(),
-                                    wallLantern.getOptions()
+                                    wallLantern.blockItem() ,
+                                    wallLantern.options()
                             );
                             registry.register(lanternLocation, block);
                             WallLanterns.LANTERN_WRAPPERS.put(
-                                    wallLantern.getResourceLocation(),
+                                    wallLantern.identifier(),
                                     new WallLanternWrapper(
                                             () -> block,
-                                            wallLantern.getOptions()
+                                            wallLantern.options()
                                     )
                             );
                         })
@@ -58,12 +90,12 @@ public final class WallLanternsNeoForge {
         private static void onWallLanternsEvent(WallLanternsEvent event) {
             event.addLantern(new WallLantern(
                     WallLanternOptions.create().cutout(),
-                    ResourceLocation.withDefaultNamespace("lantern"),
+                    Identifier.withDefaultNamespace("lantern"),
                     Items.LANTERN
             ));
             event.addLantern(new WallLantern(
                     WallLanternOptions.create().cutout(),
-                    ResourceLocation.withDefaultNamespace("soul_lantern"),
+                    Identifier.withDefaultNamespace("soul_lantern"),
                     Items.SOUL_LANTERN
             ));
         }
@@ -71,7 +103,7 @@ public final class WallLanternsNeoForge {
         @SubscribeEvent
         private static void onClientSetup(FMLClientSetupEvent ignored) {
             WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
-                if (wallLanternWrapper.getOptions().isCutoutLayer()) {
+                if (wallLanternWrapper.options().isCutoutLayer()) {
                     ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), ChunkSectionLayer.CUTOUT);
                 }
             });

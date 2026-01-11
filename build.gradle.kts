@@ -1,8 +1,8 @@
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
-    id("dev.isxander.modstitch.base") version "0.7.0-unstable"
-    id("me.modmuss50.mod-publish-plugin") version("0.8.4")
+    id("dev.isxander.modstitch.base") version "0.8.0"
+    id("me.modmuss50.mod-publish-plugin") version("1.1.0")
 }
 
 fun prop(name: String, consumer: (prop: String) -> Unit) {
@@ -34,7 +34,7 @@ modstitch {
         modGroup = "io.github.thepoultryman"
         modAuthor = "ThePoultryMan"
 
-        fun <K, V> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
+        fun <K: Any, V: Any> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
             block()
         }
 
@@ -42,11 +42,14 @@ modstitch {
             // You can put any other replacement properties/metadata here that
             // modstitch doesn't initially support. Some examples below.
             put("mod_issue_tracker", "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls")
-            prop("deps.forge_config_api_port") {
-                put("forge_config_api_port_version", it)
+            prop("deps.forge_config_api_port_min") {
+                put("forge_config_api_port_min_version", it)
+            }
+            prop("deps.min_fabric_api_version") {
+                put("fabric_api_min_version", it)
             }
             put("min_minecraft_version", property("deps.minecraft_min") as String)
-            put("arrp_but_different_version", property("deps.arrp_but_different") as String)
+            put("arrp_but_different_version", property("deps.arrp_but_different").toString().split('+')[0])
             put("minecraft_upper_bound", if (property("deps.minecraft")?.equals("latest") == true) {
                 ""
             } else {
@@ -63,7 +66,7 @@ modstitch {
     loom {
         // It's not recommended to store the Fabric Loader version in properties.
         // Make sure its up to date.
-        fabricLoaderVersion = "0.16.14"
+        fabricLoaderVersion = "0.18.4"
 
         // Configure loom like normal in this block.
         configureLoom {}
@@ -90,12 +93,14 @@ modstitch {
 // See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
 var constraint: String = name.split("-")[1]
 stonecutter {
-    constants += arrayOf(
-        "fabric" to constraint.equals("fabric"),
-        "neoforge" to constraint.equals("neoforge"),
-        "forge" to constraint.equals("forge"),
-        "vanilla" to constraint.equals("vanilla")
-    )
+    constants.match(constraint, "fabric", "neoforge")
+
+    replacements {
+        string {
+            direction = eval(current.version, ">=1.21.11")
+            replace("ResourceLocation", "Identifier")
+        }
+    }
 }
 
 repositories {
@@ -111,10 +116,10 @@ repositories {
 // use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
     if (modstitch.isLoom) {
-        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api_version")}")
         modstitchModApi("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
     }
-    modstitchModImplementation("maven.modrinth:arrp-but-different:${property("deps.arrp_but_different")}+${minecraft}-${if (modstitch.isLoom) {
+    modstitchModImplementation("maven.modrinth:arrp-but-different:${property("deps.arrp_but_different")}-${if (modstitch.isLoom) {
         "fabric"
     } else {
         "neoforge"
