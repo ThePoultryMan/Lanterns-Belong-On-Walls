@@ -3,7 +3,10 @@ package io.github.thepoultryman.walllanterns.neoforge;
 
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
 import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
-import io.github.thepoultryman.walllanterns.*;
+import io.github.thepoultryman.walllanterns.RegistryHolder;
+import io.github.thepoultryman.walllanterns.WallLanternOptions;
+import io.github.thepoultryman.walllanterns.WallLanternWrapper;
+import io.github.thepoultryman.walllanterns.WallLanterns;
 import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
 import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
@@ -12,7 +15,6 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -64,7 +66,7 @@ public final class WallLanternsNeoForge {
                             WallLanternBlock block = new WallLanternBlock(
                                     BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                                             .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                                    wallLantern.blockItem() ,
+                                    wallLantern.blockItem(),
                                     wallLantern.options()
                             );
                             registry.register(lanternLocation, block);
@@ -88,16 +90,7 @@ public final class WallLanternsNeoForge {
     private static class EventHandler {
         @SubscribeEvent
         private static void onWallLanternsEvent(WallLanternsEvent event) {
-            event.addLantern(new WallLantern(
-                    WallLanternOptions.create().cutout(),
-                    Identifier.withDefaultNamespace("lantern"),
-                    Items.LANTERN
-            ));
-            event.addLantern(new WallLantern(
-                    WallLanternOptions.create().cutout(),
-                    Identifier.withDefaultNamespace("soul_lantern"),
-                    Items.SOUL_LANTERN
-            ));
+            WallLanterns.addVanillaLanterns(event);
         }
 
         @SubscribeEvent

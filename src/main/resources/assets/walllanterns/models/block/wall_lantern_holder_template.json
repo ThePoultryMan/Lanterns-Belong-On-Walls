@@ -3,7 +3,6 @@
 	"parent": "block/block",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"lantern_holder": "walllanterns:block/wall_lantern_holder",
 		"particle": "#lantern_holder"
 	},
 	"elements": [

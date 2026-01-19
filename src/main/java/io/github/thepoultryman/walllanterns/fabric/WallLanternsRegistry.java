@@ -13,7 +13,19 @@ public class WallLanternsRegistry {
     }
 
     public void registerLantern(WallLanternOptions options, Identifier identifier, Item blockItem) {
-        WallLanterns.WALL_LANTERNS.add(new WallLantern(options, identifier, blockItem));
+        this.registerLantern(new WallLantern(options, identifier, blockItem));
+    }
+
+    public void registerLantern(WallLantern lantern) {
+        WallLanterns.WALL_LANTERNS.add(lantern);
+    }
+
+    /^*
+     * Alias for {@link WallLanternsRegistry#registerLantern(WallLantern)}
+     * that helps projects using the same source code across loaders.
+     ^/
+    public void addLantern(WallLantern lantern) {
+        this.registerLantern(lantern);
     }
 }
 *///?}

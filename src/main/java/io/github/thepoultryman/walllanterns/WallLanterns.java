@@ -4,15 +4,22 @@ import io.github.thepoultryman.arrp_but_different.api.RuntimeResourcePack;
 import io.github.thepoultryman.arrp_but_different.json.JTag;
 import io.github.thepoultryman.arrp_but_different.json.loot.JLootTable;
 import io.github.thepoultryman.arrp_but_different.json.loot.JPool;
+import io.github.thepoultryman.arrp_but_different.json.model.JModel;
+import io.github.thepoultryman.arrp_but_different.json.model.JTextures;
 import io.github.thepoultryman.arrp_but_different.json.state.JBlockModel;
 import io.github.thepoultryman.arrp_but_different.json.state.JMultipart;
 import io.github.thepoultryman.arrp_but_different.json.state.JState;
 import io.github.thepoultryman.arrp_but_different.json.state.JWhen;
 import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
 import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
+import io.github.thepoultryman.walllanterns.neoforge.WallLanternsEvent;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -21,6 +28,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public final class WallLanterns {
     public static final String MOD_ID = "walllanterns";
@@ -42,11 +51,9 @@ public final class WallLanterns {
             Identifier modelLocation = Identifier.fromNamespaceAndPath("walllanterns_dynamic",
                     "wall_" + resourceLocation.getPath()
             );
-            Identifier blockLocation = resourceLocation.withPath("block/" + resourceLocation.getPath());
 
-            JBlockModel lanternModel = new JBlockModel(blockLocation);
-            JBlockModel holderModel = new JBlockModel(
-                    Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID, "block/wall_lantern_holder"));
+            JBlockModel lanternModel = new JBlockModel(wallLanternWrapper.options().getLanternModel());
+            JBlockModel holderModel = new JBlockModel(wallLanternWrapper.options().getLanternHolderModel());
             pack.addBlockSate(modelLocation, new JState()
                     .addAll(new JMultipart()
                                     .when(new JWhen().add(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH))
@@ -92,7 +99,76 @@ public final class WallLanterns {
             mineableWithPickaxe.add(modelLocation);
         });
         pack.addTag(Identifier.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
+
+        addHolderModel(pack, "", null);
+        addHolderModel(pack, "copper", null);
+        addHolderModel(pack, "exposed_copper", null);
+        addHolderModel(pack, "weathered_copper", null);
+        addHolderModel(pack, "oxidized_copper", null);
+
         return pack;
+    }
+
+    public static void addVanillaLanterns(/*? if neoforge { */WallLanternsEvent/*? } else {*//*WallLanternsRegistry*//*?}*/ event) {
+        for (Item lantern : new Item[]{Items.LANTERN, Items.SOUL_LANTERN}) {
+            Identifier lanternId = BuiltInRegistries.ITEM.getKey(lantern);
+            event.addLantern(new WallLantern(
+                    WallLanternOptions
+                            .create()
+                            .cutout()
+                            .lanternModel(lanternId.withPrefix("block/")),
+                    lanternId,
+                    lantern
+            ));
+        }
+
+        List<Tuple<Item, Optional<Item>>> copperLanterns = List.of(
+                new Tuple<>(Items.COPPER_LANTERN.unaffected(), Optional.empty()),
+                new Tuple<>(Items.COPPER_LANTERN.exposed(), Optional.empty()),
+                new Tuple<>(Items.COPPER_LANTERN.weathered(), Optional.empty()),
+                new Tuple<>(Items.COPPER_LANTERN.oxidized(), Optional.empty()),
+                new Tuple<>(Items.COPPER_LANTERN.waxed(), Optional.of(Items.COPPER_LANTERN.unaffected())),
+                new Tuple<>(Items.COPPER_LANTERN.waxedExposed(), Optional.of(Items.COPPER_LANTERN.exposed())),
+                new Tuple<>(Items.COPPER_LANTERN.waxedWeathered(), Optional.of(Items.COPPER_LANTERN.weathered())),
+                new Tuple<>(Items.COPPER_LANTERN.waxedOxidized(), Optional.of(Items.COPPER_LANTERN.oxidized()))
+        );
+
+        String[] copperStates = {
+                "",
+                "exposed_",
+                "weathered_",
+                "oxidized_",
+        };
+        for (int i = 0; i < copperLanterns.size(); i++) {
+            Tuple<Item, Optional<Item>> lantern = copperLanterns.get(i);
+            WallLanternOptions options = WallLanternOptions
+                    .create()
+                    .cutout()
+                    .lanternModel(BuiltInRegistries.ITEM.getKey(lantern.getB().orElse(lantern.getA()))
+                            .withPrefix("block/"));
+            event.addLantern(new WallLantern(
+                    options.lanternHolderModel(Identifier.fromNamespaceAndPath(
+                            WallLanterns.MOD_ID,
+                            "block/" + copperStates[i % 4] + "copper_wall_lantern_holder"
+                    )),
+                    BuiltInRegistries.ITEM.getKey(lantern.getA()),
+                    lantern.getA()
+            ));
+        }
+    }
+
+    public static void addHolderModel(RuntimeResourcePack pack, String pathPiece, String texturePiece) {
+        String blockPath = "block/" + pathPiece + (!pathPiece.isEmpty() ? "_" : "") + "wall_lantern_holder";
+        pack.addModel(
+                Identifier.fromNamespaceAndPath(MOD_ID, blockPath),
+                new JModel()
+                        .parent("walllanterns:block/wall_lantern_holder_template")
+                        .renderType("minecraft:cutout")
+                        .textures(
+                                new JTextures()
+                                        .add("lantern_holder", MOD_ID + ":" + blockPath)
+                        )
+        );
     }
 
     public static Identifier dynamicIdentifier(Identifier resourceLocation) {
