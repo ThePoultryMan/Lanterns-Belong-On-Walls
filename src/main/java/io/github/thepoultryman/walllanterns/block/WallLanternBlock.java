@@ -1,9 +1,12 @@
 package io.github.thepoultryman.walllanterns.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.thepoultryman.walllanterns.WallLanternOptions;
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,18 +28,35 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
+    public static final MapCodec<WallLanternBlock> CODEC =
+            RecordCodecBuilder.mapCodec(
+                    (instance) -> instance
+                            .group(
+                                    propertiesCodec(),
+                                    BuiltInRegistries.ITEM.byNameCodec()
+                                            .fieldOf("block_item")
+                                            .forGetter(WallLanternBlock::asItem),
+                                    WallLanternOptions.CODEC
+                                            .fieldOf("wall_lantern_options")
+                                            .forGetter((lantern) -> lantern.options)
+                            )
+                            .apply(instance, WallLanternBlock::new)
+            );
+
     private final VoxelShape onWallShapeNorth;
     private final VoxelShape onWallShapeEast;
     private final VoxelShape onWallShapeSouth;
     private final VoxelShape onWallShapeWest;
 
-    private final Item blockItem;
+    protected final Item blockItem;
+    protected final WallLanternOptions options;
 
     public WallLanternBlock(Properties properties, Item blockItem, WallLanternOptions options) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         this.blockItem = blockItem;
+        this.options = options;
 
         VoxelShape baseLanternShape = options.getShape() != null ? options.getShape() : LanternBlockAccessor.getStandingShape();
         this.onWallShapeNorth = Shapes.or(baseLanternShape,
@@ -73,9 +93,8 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
 
     @Override
     protected @NotNull BlockState updateShape(BlockState blockState, LevelReader levelReader,
-            ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction,
-            BlockPos blockPos2, BlockState blockState2, RandomSource randomSource)
-    {
+                                              ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction,
+                                              BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(BlockStateProperties.WATERLOGGED)) {
             scheduledTickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelReader));
         }
@@ -88,9 +107,11 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
         return this.getStateDefinition().any()
-                .setValue(BlockStateProperties.WATERLOGGED,
-                blockPlaceContext.getLevel()
-                        .getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER)
+                .setValue(
+                        BlockStateProperties.WATERLOGGED,
+                        blockPlaceContext.getLevel()
+                                .getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER
+                )
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, blockPlaceContext.getClickedFace());
     }
 
@@ -112,5 +133,10 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public @NotNull Item asItem() {
         return this.blockItem;
+    }
+
+    @Override
+    protected MapCodec<? extends Block> codec() {
+        return CODEC;
     }
 }

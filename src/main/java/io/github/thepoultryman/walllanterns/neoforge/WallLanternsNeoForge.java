@@ -10,6 +10,7 @@ import io.github.thepoultryman.walllanterns.WallLanterns;
 import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
 import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
+import io.github.thepoultryman.walllanterns.block.WeatheringWallLanternBlock;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.registries.Registries;
@@ -63,12 +64,20 @@ public final class WallLanternsNeoForge {
                             Identifier lanternLocation = WallLanterns.dynamicIdentifier(
                                     wallLantern.identifier()
                             );
-                            WallLanternBlock block = new WallLanternBlock(
-                                    BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                            .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                                    wallLantern.blockItem(),
-                                    wallLantern.options()
-                            );
+                            WallLanternBlock block;
+                            if (wallLantern.options().getWeatheringState() != null) {
+                                block = new WeatheringWallLanternBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                                        wallLantern.blockItem(),
+                                        wallLantern.options());
+                            } else {
+                                block = new WallLanternBlock(
+                                        BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                                .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                                        wallLantern.blockItem(),
+                                        wallLantern.options()
+                                );
+                            }
                             registry.register(lanternLocation, block);
                             WallLanterns.LANTERN_WRAPPERS.put(
                                     wallLantern.identifier(),

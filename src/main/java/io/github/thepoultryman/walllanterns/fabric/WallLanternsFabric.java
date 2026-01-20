@@ -9,18 +9,23 @@ import io.github.thepoultryman.walllanterns.WallLanterns;
 import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
 import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
+import io.github.thepoultryman.walllanterns.block.WeatheringWallLanternBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public final class WallLanternsFabric implements ModInitializer {
     @Override
@@ -46,15 +51,50 @@ public final class WallLanternsFabric implements ModInitializer {
                 .forEach((entrypoint) -> entrypoint.registerLanterns(wallLanternsRegistry));
         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
             Identifier lanternLocation = WallLanterns.dynamicIdentifier(wallLantern.identifier());
-            WallLanternBlock block = new WallLanternBlock(
-                    Blocks.LANTERN.properties().setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
-                    wallLantern.blockItem(), wallLantern.options()
-            );
+            WallLanternBlock block;
+            if (wallLantern.options().getWeatheringState() == null) {
+                 block = new WallLanternBlock(
+                        Blocks.LANTERN.properties().setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                        wallLantern.blockItem(),
+                        wallLantern.options()
+                );
+            } else {
+                block = new WeatheringWallLanternBlock(
+                        Blocks.LANTERN.properties().setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                        wallLantern.blockItem(),
+                        wallLantern.options(),
+                        wallLantern.options().getWeatheringState()
+                );
+            }
             Registry.register(BuiltInRegistries.BLOCK, lanternLocation, block);
             WallLanterns.LANTERN_WRAPPERS.put(wallLantern.identifier(),
                     new WallLanternWrapper(() -> block, wallLantern.options())
             );
         });
+
+        // oxidation
+        String[] baseCopperLanternIds = {
+                "copper_lantern",
+                "exposed_copper_lantern",
+                "weathered_copper_lantern",
+                "oxidized_copper_lantern",
+        };
+        for (int i = 0; i < baseCopperLanternIds.length - 1; i++) {
+            Optional<Block> maybeLess = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(baseCopperLanternIds[i]));
+            Optional<Block> maybeMore = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(baseCopperLanternIds[i + 1]));
+            if (maybeLess.isPresent() && maybeMore.isPresent()) {
+                OxidizableBlocksRegistry.registerOxidizableBlockPair(maybeLess.get(), maybeMore.get());
+                System.out.println("PEEPEE: " + maybeLess + " " + maybeMore);
+            }
+        }
+        // waxing
+        for (String copperLanternId : baseCopperLanternIds) {
+            Optional<Block> maybeUnwaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(copperLanternId));
+            Optional<Block> maybeWaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier("waxed_" + copperLanternId));
+            if (maybeUnwaxed.isPresent() && maybeWaxed.isPresent()) {
+                OxidizableBlocksRegistry.registerWaxableBlockPair(maybeUnwaxed.get(), maybeWaxed.get());
+            }
+        }
 
         ARRPEvent.BEFORE_USER.register(resources -> resources.add(WallLanterns.createRuntimePack()));
     }

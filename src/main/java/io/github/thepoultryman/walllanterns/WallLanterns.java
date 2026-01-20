@@ -20,6 +20,7 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -100,11 +101,11 @@ public final class WallLanterns {
         });
         pack.addTag(Identifier.withDefaultNamespace("block/mineable/pickaxe"), mineableWithPickaxe);
 
-        addHolderModel(pack, "", null);
-        addHolderModel(pack, "copper", null);
-        addHolderModel(pack, "exposed_copper", null);
-        addHolderModel(pack, "weathered_copper", null);
-        addHolderModel(pack, "oxidized_copper", null);
+        addHolderModel(pack, "");
+        addHolderModel(pack, "copper");
+        addHolderModel(pack, "exposed_copper");
+        addHolderModel(pack, "weathered_copper");
+        addHolderModel(pack, "oxidized_copper");
 
         return pack;
     }
@@ -133,23 +134,24 @@ public final class WallLanterns {
                 new Tuple<>(Items.COPPER_LANTERN.waxedOxidized(), Optional.of(Items.COPPER_LANTERN.oxidized()))
         );
 
-        String[] copperStates = {
-                "",
-                "exposed_",
-                "weathered_",
-                "oxidized_",
-        };
         for (int i = 0; i < copperLanterns.size(); i++) {
+            WeatheringCopper.WeatherState copperState = WeatheringCopper.WeatherState.BY_ID.apply(i % 4);
+            String copperStateString = copperState.getSerializedName() + "_";
+            if (copperState == WeatheringCopper.WeatherState.UNAFFECTED) {
+                copperStateString = "";
+            }
+
             Tuple<Item, Optional<Item>> lantern = copperLanterns.get(i);
             WallLanternOptions options = WallLanternOptions
                     .create()
                     .cutout()
+                    .weatheringState(copperState)
                     .lanternModel(BuiltInRegistries.ITEM.getKey(lantern.getB().orElse(lantern.getA()))
                             .withPrefix("block/"));
             event.addLantern(new WallLantern(
                     options.lanternHolderModel(Identifier.fromNamespaceAndPath(
                             WallLanterns.MOD_ID,
-                            "block/" + copperStates[i % 4] + "copper_wall_lantern_holder"
+                            "block/" + copperStateString + "copper_wall_lantern_holder"
                     )),
                     BuiltInRegistries.ITEM.getKey(lantern.getA()),
                     lantern.getA()
@@ -157,7 +159,7 @@ public final class WallLanterns {
         }
     }
 
-    public static void addHolderModel(RuntimeResourcePack pack, String pathPiece, String texturePiece) {
+    public static void addHolderModel(RuntimeResourcePack pack, String pathPiece) {
         String blockPath = "block/" + pathPiece + (!pathPiece.isEmpty() ? "_" : "") + "wall_lantern_holder";
         pack.addModel(
                 Identifier.fromNamespaceAndPath(MOD_ID, blockPath),

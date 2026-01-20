@@ -1,0 +1,16 @@
+{
+  "values": {
+    "walllanterns_dynamic:wall_copper_lantern": {
+      "waxed": "walllanterns_dynamic:wall_waxed_copper_lantern"
+    },
+    "walllanterns_dynamic:wall_exposed_copper_lantern": {
+      "waxed": "walllanterns_dynamic:wall_waxed_exposed_copper_lantern"
+    },
+    "walllanterns_dynamic:wall_weathered_copper_lantern": {
+      "waxed": "walllanterns_dynamic:wall_waxed_weathered_copper_lantern"
+    },
+    "walllanterns_dynamic:wall_oxidized_copper_lantern": {
+      "waxed": "walllanterns_dynamic:wall_waxed_oxidized_copper_lantern"
+    }
+  }
+}
