@@ -9,7 +9,7 @@ import io.github.thepoultryman.walllanterns.block.CompatibilityLanternEntity;
 import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
 import io.github.thepoultryman.walllanterns.block.WeatheringWallLanternBlock;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
+//import net.minecraft.client.renderer.ItemBlockRenderTypes;
 //? if > 1.21.1 {
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
  //? } else
@@ -119,12 +119,12 @@ public final class WallLanternsNeoForge {
         private static void onClientSetup(FMLClientSetupEvent ignored) {
             WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
                 if (wallLanternWrapper.options().isCutoutLayer()) {
-                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(),
-                            //? if > 1.21.1 {
-                            ChunkSectionLayer.CUTOUT
-                             //? } else
-                            //RenderType.cutout()
-                    );
+//                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(),
+//                            //? if > 1.21.1 {
+//                            ChunkSectionLayer.CUTOUT
+//                             //? } else
+//                            //RenderType.cutout()
+//                    );
                 }
             });
         }

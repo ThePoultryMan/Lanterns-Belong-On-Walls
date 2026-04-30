@@ -6,11 +6,14 @@ import io.github.thepoultryman.walllanterns.block.CompatibilityLanternRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-//? if > 1.21.1 {
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+//? if >= 26.1 {
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+//? } else
+//import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+//? if > 1.21.1 && < 26.1 {
+/^import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-//? } else {
+^///? } else if < 26.1 {
 /^import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 ^///? }
@@ -19,7 +22,10 @@ import net.minecraft.client.renderer.RenderType;
 public class WallLanternsFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        BlockEntityRendererRegistry.register(WallLanterns.LANTERN_ENTITY_TYPE.get(), CompatibilityLanternRenderer::new);
+        //? if >= 26.1 {
+        BlockEntityRenderers.register(WallLanterns.LANTERN_ENTITY_TYPE.get(), CompatibilityLanternRenderer::new);
+        //? } else {
+        /^//BlockEntityRendererRegistry.register(WallLanterns.LANTERN_ENTITY_TYPE.get(), CompatibilityLanternRenderer::new);
         WallLanterns.LANTERN_WRAPPERS.forEach(
                 (identifier, wallLanternWrapper) -> {
                     if (wallLanternWrapper.options().isCutoutLayer()) {
@@ -37,6 +43,7 @@ public class WallLanternsFabricClient implements ClientModInitializer {
                     }
                 }
         );
+        ^///? }
     }
 }
 *///?}

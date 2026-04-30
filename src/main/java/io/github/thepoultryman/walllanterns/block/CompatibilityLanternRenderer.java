@@ -1,40 +1,48 @@
 package io.github.thepoultryman.walllanterns.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
 //? if >= 1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+//? }
+
+//? if >= 26.1 {
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+//? } else if >= 1.21.9 {
+/*import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.state.CameraRenderState;
-//? } else if <= 1.21.6 {
+*///? } else if <= 1.21.6 {
 /*import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.level.Level;
 *///? }
 
+//? if < 26.1
+//import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+
+
 public class CompatibilityLanternRenderer
-        implements BlockEntityRenderer<@NonNull CompatibilityLanternEntity/*? if >= 1.21.9 {*/, @NonNull CompatibilityLanternState/*? }*/>
-{
-    private final BlockRenderDispatcher renderDispatcher;
-    private final MultiBufferSource.BufferSource crumblingBuffer;
+        implements BlockEntityRenderer<@NonNull CompatibilityLanternEntity/*? if >= 1.21.9 {*/, @NonNull CompatibilityLanternState/*? }*/> {
+    //? if < 26.1
+    //private final BlockRenderDispatcher renderDispatcher;
 
     public CompatibilityLanternRenderer(BlockEntityRendererProvider.Context context) {
-        this.renderDispatcher = context.blockRenderDispatcher();
-        this.crumblingBuffer = Minecraft.getInstance().renderBuffers().crumblingBufferSource();
+        //? if < 26.1
+        //this.renderDispatcher = context.blockRenderDispatcher();
     }
 
     //? if >= 1.21.9
@@ -46,11 +54,10 @@ public class CompatibilityLanternRenderer
     //? if >= 1.21.9
     @Override
     public void extractRenderState(@NonNull CompatibilityLanternEntity lanternEntity,
-            @NonNull CompatibilityLanternState state, float partialTick, @NonNull Vec3 cameraPos
-            //? if >= 1.21.9
+                                   @NonNull CompatibilityLanternState state, float partialTick, @NonNull Vec3 cameraPos
+                                   //? if >= 1.21.9
             , ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay
-    )
-    {
+    ) {
         //? if >= 1.21.9 {
         BlockEntityRenderState.extractBase(lanternEntity, state, crumblingOverlay);
         state.setOverlayTexture(crumblingOverlay);
@@ -60,47 +67,40 @@ public class CompatibilityLanternRenderer
         state.setMimickedLanternState(Blocks.LANTERN.defaultBlockState());
 
         var model = /*? if > 1.21.1 {*/state.getModelParts()/*? } else {*//*state.getBakedModel()*//*? }*/;
-        boolean modelIsMissing = model == null /*? if > 1.21.1 {*/|| model.isEmpty() /*? }*/;
+        boolean modelIsMissing = model == null /*? if > 1.21.1 {*/ || model.isEmpty() /*? }*/;
         if (lanternEntity.shouldForceLanternUpdate() || modelIsMissing) {
             lanternEntity.forceLanternUpdate(false);
             state.setMimickedLanternState(
                     lanternEntity.getMimickedLanternState() != null ? lanternEntity.getMimickedLanternState() : Blocks.LANTERN.defaultBlockState());
-            //? if > 1.21.1 {
-            state.setModelParts(this.renderDispatcher.getBlockModel(state.getMimickedLanternState())
+            //? if >= 26.1 {
+            List<BlockStateModelPart> parts = new ArrayList<>();
+            Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state.getMimickedLanternState())
+                    .collectParts(state.getLevel().getRandom(), parts);
+            state.setModelParts(parts);
+            //? } else if > 1.21.1 {
+            /*state.setModelParts(this.renderDispatcher.getBlockModel(state.getMimickedLanternState())
                     .collectParts(RandomSource.create()));
-            //? } else {
+            *///? } else {
             /*state.setBakedModel(model);
-            *///? }
+             *///? }
         }
     }
 
     //? if >= 1.21.9 {
     @Override
     public void submit(CompatibilityLanternState state, @NonNull PoseStack poseStack,
-            @NonNull SubmitNodeCollector submitNodeCollector, @NonNull CameraRenderState cameraRenderState)
-    {
-        int breakProgress = state.getOverlayTexture() != null ? state.getOverlayTexture().progress() : -1;
-        // I am not 100% sure that the following is correct by any means, but it is similar to what
-        // vanilla does, and it works.
-        if (breakProgress >= 0) {
-            poseStack.pushPose();
-
-            VertexConsumer decalGenerator = new SheetedDecalTextureGenerator(
-                    this.crumblingBuffer.getBuffer(ModelBakery.DESTROY_TYPES.get(breakProgress)), poseStack.last(),
-                    1.0f
-            );
-
-            this.renderDispatcher.getModelRenderer()
-                    .tesselateWithoutAO(state.getLevel(), state.getModelParts(), state.getMimickedLanternState(),
-                            cameraRenderState.blockPos, poseStack, decalGenerator, false, 0
-                    );
-            poseStack.popPose();
-        }
+                       @NonNull SubmitNodeCollector submitNodeCollector, @NonNull CameraRenderState cameraRenderState) {
 
         poseStack.pushPose();
-        submitNodeCollector.submitBlock(poseStack, state.getMimickedLanternState(), state.lightCoords,
+        //? if >= 26.1 {
+        submitNodeCollector.submitBlockModel(poseStack, RenderTypes.cutoutMovingBlock(), state.getModelParts(),
+                new int[]{}, state.lightCoords, OverlayTexture.NO_OVERLAY, 0
+        );
+        //? } else {
+        /*submitNodeCollector.submitBlock(poseStack, state.getMimickedLanternState(), state.lightCoords,
                 OverlayTexture.NO_OVERLAY, 0
         );
+        *///? }
         poseStack.popPose();
     }
     //? } else {
@@ -109,19 +109,6 @@ public class CompatibilityLanternRenderer
                        MultiBufferSource multiBufferSource, int i, int j) {
         CompatibilityLanternState state = new CompatibilityLanternState();
         this.extractRenderState(blockEntity, state, f, Vec3.ZERO);
-
-//        int breakProgress = Minecraft.getInstance().levelRenderer.
-//        if (blockEntity.getLevel() instanceof ClientLevel level) {
-//
-//        } else {
-//
-//        }
-
-//        VertexConsumer decalGenerator = new SheetedDecalTextureGenerator(
-//                this.crumblingBuffer.getBuffer(ModelBakery.DESTROY_TYPES.get(breakProgress)), poseStack.last(),
-//                1.0f
-//        );
-
 
         var model = /^? if > 1.21.1 {^/state.getModelParts()/^? } else {^//^state.getBakedModel()^//^? }^/;
         Level level = blockEntity.getLevel();

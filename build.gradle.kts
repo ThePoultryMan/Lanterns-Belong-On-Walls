@@ -129,6 +129,10 @@ stonecutter {
 
     replacements {
         string {
+            direction = eval(current.version, ">= 26.1")
+            replace("BlockModelPart", "BlockStateModelPart")
+        }
+        string {
             direction = eval(current.version, ">=1.21.11")
             replace("ResourceLocation", "Identifier")
             replace("import org.jetbrains.annotations.NotNull;", "import org.jspecify.annotations.NonNull;")
@@ -155,12 +159,11 @@ repositories {
 dependencies {
     if (modstitch.isLoom) {
         modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api_version")}")
-        modstitchModApi("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
     }
 }
 
 publishMods {
-    if (modstitch.isLoom) {
+    if (modstitch.isLoom && stonecutter.eval(stonecutter.current.version, "< 26.1")) {
         file.set(tasks.named<RemapJarTask>("remapJar").get().archiveFile)
     } else {
         file.set(tasks.jar.get().archiveFile)

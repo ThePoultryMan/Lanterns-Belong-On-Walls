@@ -6,7 +6,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 //? if >= 1.21.9 {
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+//? if >= 26.1 {
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+//? } else
+//import net.minecraft.client.renderer.block.model.BlockStateModelPart;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 //? }
 
@@ -14,7 +17,7 @@ import java.util.List;
 public class CompatibilityLanternState /*? if >= 1.21.9 { */extends BlockEntityRenderState/*? }*/ {
     private BlockState mimickedLanternState;
     //? if > 1.21.1 {
-    private List<BlockModelPart> modelParts;
+    private List<BlockStateModelPart> modelParts;
     //? } else
     //private BakedModel bakedModel;
     //? if >= 1.21.9
@@ -30,11 +33,11 @@ public class CompatibilityLanternState /*? if >= 1.21.9 { */extends BlockEntityR
     }
 
     //? if > 1.21.1 {
-    public List<BlockModelPart> getModelParts() {
+    public List<BlockStateModelPart> getModelParts() {
         return this.modelParts;
     }
 
-    public void setModelParts(List<BlockModelPart> modelParts) {
+    public void setModelParts(List<BlockStateModelPart> modelParts) {
         this.modelParts = modelParts;
     }
     //? } else {

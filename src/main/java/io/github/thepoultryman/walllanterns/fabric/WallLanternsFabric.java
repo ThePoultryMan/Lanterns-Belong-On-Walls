@@ -41,6 +41,7 @@ public final class WallLanternsFabric implements ModInitializer {
 
         BlockEntityType<@NonNull CompatibilityLanternEntity> lanternEntity = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE, WallLanterns.COMPAT_LANTERN_ID,
+
                 FabricBlockEntityTypeBuilder.create(CompatibilityLanternEntity::new,
                         WallLanterns.COMPATIBILITY_WALL_LANTERN.get()
                 ).build()
@@ -90,7 +91,10 @@ public final class WallLanternsFabric implements ModInitializer {
             Optional<Block> maybeLess = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(baseCopperLanternIds[i]));
             Optional<Block> maybeMore = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(baseCopperLanternIds[i + 1]));
             if (maybeLess.isPresent() && maybeMore.isPresent()) {
-                OxidizableBlocksRegistry.registerOxidizableBlockPair(maybeLess.get(), maybeMore.get());
+                //? if >= 26.1 {
+                OxidizableBlocksRegistry.registerNextStage(maybeLess.get(), maybeMore.get());
+                //? } else
+                //OxidizableBlocksRegistry.registerOxidizableBlockPair(maybeLess.get(), maybeMore.get());
             }
         }
         // waxing
@@ -98,7 +102,10 @@ public final class WallLanternsFabric implements ModInitializer {
             Optional<Block> maybeUnwaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(copperLanternId));
             Optional<Block> maybeWaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId("waxed_" + copperLanternId));
             if (maybeUnwaxed.isPresent() && maybeWaxed.isPresent()) {
-                OxidizableBlocksRegistry.registerWaxableBlockPair(maybeUnwaxed.get(), maybeWaxed.get());
+                //? if >= 26.1 {
+                OxidizableBlocksRegistry.registerWaxable(maybeUnwaxed.get(), maybeWaxed.get());
+                //? } else
+                //OxidizableBlocksRegistry.registerWaxableBlockPair(maybeUnwaxed.get(), maybeWaxed.get());
             }
         }
     }
