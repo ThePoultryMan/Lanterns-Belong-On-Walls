@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CompatibilityWallLantern extends WallLanternBlock implements EntityBlock {
@@ -21,12 +21,11 @@ public class CompatibilityWallLantern extends WallLanternBlock implements Entity
     }
 
     @Override
-    public void setPlacedBy(Level level, @NotNull BlockPos pos, @NotNull BlockState state,
-            @Nullable LivingEntity livingEntity, @NotNull ItemStack itemStack)
+    public void setPlacedBy(Level level, @NonNull BlockPos pos, @NonNull BlockState state,
+            @Nullable LivingEntity livingEntity, @NonNull ItemStack itemStack)
     {
         level.getBlockEntity(pos, WallLanterns.LANTERN_ENTITY_TYPE.get()).ifPresent(blockEntity -> {
             if (itemStack.getItem() instanceof BlockItem item) {
-                System.out.println(item.getBlock().getName().getString());
                 blockEntity.setMimickedLanternState(item.getBlock().defaultBlockState());
                 blockEntity.forceLanternUpdate(true);
             }
@@ -34,7 +33,7 @@ public class CompatibilityWallLantern extends WallLanternBlock implements Entity
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+    public @Nullable BlockEntity newBlockEntity(@NonNull BlockPos blockPos, @NonNull BlockState blockState) {
         return new CompatibilityLanternEntity(blockPos, blockState);
     }
 }

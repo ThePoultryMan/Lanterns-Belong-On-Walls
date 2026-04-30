@@ -3,10 +3,15 @@ package io.github.thepoultryman.walllanterns;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.Optional;
 
 public class WallLanternOptions {
     public static final MapCodec<WallLanternOptions> CODEC;
@@ -16,15 +21,19 @@ public class WallLanternOptions {
     private VoxelShape shape;
     private Identifier lanternModel = Identifier.withDefaultNamespace("block/lantern");
     private Identifier lanternHolderModel = Identifier.fromNamespaceAndPath(WallLanterns.MOD_ID, "block/wall_lantern_holder");
+    private ResourceKey<LootTable> lootTableOf;
 
     public WallLanternOptions() {}
 
-    public WallLanternOptions(boolean cutout, WeatheringCopper.WeatherState weatheringState, Object shape, Identifier lanternModel, Identifier lanternHolderModel) {
+    public WallLanternOptions(boolean cutout, WeatheringCopper.WeatherState weatheringState, Object shape,
+                              Identifier lanternModel, Identifier lanternHolderModel,
+                              ResourceKey<LootTable> lootTableOf) {
         this.cutout = cutout;
         this.weatheringState = weatheringState;
         this.shape = (VoxelShape) shape;
         this.lanternModel = lanternModel;
         this.lanternHolderModel = lanternHolderModel;
+        this.lootTableOf = lootTableOf;
     }
 
     public static WallLanternOptions create() {
@@ -76,6 +85,24 @@ public class WallLanternOptions {
         return this.lanternHolderModel;
     }
 
+    public WallLanternOptions lootTableOf(Optional<ResourceKey<LootTable>> lootTableOf) {
+        this.lootTableOf = lootTableOf.orElse(null);
+        return this;
+    }
+
+    public WallLanternOptions lootTableOf(ResourceKey<LootTable> lootTableOf) {
+        this.lootTableOf = lootTableOf;
+        return this;
+    }
+
+    public ResourceKey<LootTable> getLootTableOfNullable() {
+        return this.lootTableOf;
+    }
+
+    public Optional<ResourceKey<LootTable>> getLootTableOf() {
+        return Optional.ofNullable(this.lootTableOf);
+    }
+
     static {
         CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codec.BOOL
@@ -92,7 +119,10 @@ public class WallLanternOptions {
                         .forGetter(WallLanternOptions::getLanternModel),
                 Identifier.CODEC
                         .fieldOf("lantern_holder_model")
-                        .forGetter(WallLanternOptions::getLanternHolderModel)
+                        .forGetter(WallLanternOptions::getLanternHolderModel),
+                ResourceKey.codec(Registries.LOOT_TABLE)
+                        .fieldOf("lootTableOf")
+                        .forGetter(WallLanternOptions::getLootTableOfNullable)
         ).apply(instance, WallLanternOptions::new));
     }
 }

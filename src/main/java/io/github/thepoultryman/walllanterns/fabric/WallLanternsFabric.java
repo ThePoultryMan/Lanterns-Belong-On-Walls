@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public final class WallLanternsFabric implements ModInitializer {
         );
         WallLanterns.COMPATIBILITY_WALL_LANTERN = new RegistryHolder<>(() -> lantern);
 
-        BlockEntityType<@NotNull CompatibilityLanternEntity> lanternEntity = Registry.register(
+        BlockEntityType<@NonNull CompatibilityLanternEntity> lanternEntity = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE, WallLanterns.COMPAT_LANTERN_ID,
                 FabricBlockEntityTypeBuilder.create(CompatibilityLanternEntity::new,
                         WallLanterns.COMPATIBILITY_WALL_LANTERN.get()

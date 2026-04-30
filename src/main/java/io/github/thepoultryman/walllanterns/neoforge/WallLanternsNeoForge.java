@@ -26,11 +26,11 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @Mod(WallLanterns.MOD_ID)
 public final class WallLanternsNeoForge {
-    public static final DeferredRegister<@NotNull BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(
+    public static final DeferredRegister<@NonNull BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(
             Registries.BLOCK_ENTITY_TYPE, WallLanterns.MOD_ID);
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(WallLanterns.MOD_ID);
 

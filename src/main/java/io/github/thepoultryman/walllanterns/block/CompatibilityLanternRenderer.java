@@ -4,31 +4,30 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-//? if <= 1.21.6
-//import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.Nullable;
 //? if >= 1.21.9 {
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
-//? }
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
+//? } else if <= 1.21.6 {
+/*import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+*///? }
 
 public class CompatibilityLanternRenderer
-        implements BlockEntityRenderer<@NotNull CompatibilityLanternEntity/*? if >= 1.21.9 {*/, @NotNull CompatibilityLanternState/*? }*/>
+        implements BlockEntityRenderer<@NonNull CompatibilityLanternEntity/*? if >= 1.21.9 {*/, @NonNull CompatibilityLanternState/*? }*/>
 {
     private final BlockRenderDispatcher renderDispatcher;
     private final MultiBufferSource.BufferSource crumblingBuffer;
@@ -46,8 +45,8 @@ public class CompatibilityLanternRenderer
 
     //? if >= 1.21.9
     @Override
-    public void extractRenderState(@NotNull CompatibilityLanternEntity lanternEntity,
-            @NotNull CompatibilityLanternState state, float partialTick, @NotNull Vec3 cameraPos
+    public void extractRenderState(@NonNull CompatibilityLanternEntity lanternEntity,
+            @NonNull CompatibilityLanternState state, float partialTick, @NonNull Vec3 cameraPos
             //? if >= 1.21.9
             , ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay
     )
@@ -77,8 +76,8 @@ public class CompatibilityLanternRenderer
 
     //? if >= 1.21.9 {
     @Override
-    public void submit(CompatibilityLanternState state, @NotNull PoseStack poseStack,
-            @NotNull SubmitNodeCollector submitNodeCollector, @NotNull CameraRenderState cameraRenderState)
+    public void submit(CompatibilityLanternState state, @NonNull PoseStack poseStack,
+            @NonNull SubmitNodeCollector submitNodeCollector, @NonNull CameraRenderState cameraRenderState)
     {
         int breakProgress = state.getOverlayTexture() != null ? state.getOverlayTexture().progress() : -1;
         // I am not 100% sure that the following is correct by any means, but it is similar to what
@@ -106,7 +105,7 @@ public class CompatibilityLanternRenderer
     }
     //? } else {
     /*@Override
-    public void render(@NotNull CompatibilityLanternEntity blockEntity, float f, PoseStack poseStack,
+    public void render(@NonNull CompatibilityLanternEntity blockEntity, float f, PoseStack poseStack,
                        MultiBufferSource multiBufferSource, int i, int j) {
         CompatibilityLanternState state = new CompatibilityLanternState();
         this.extractRenderState(blockEntity, state, f, Vec3.ZERO);

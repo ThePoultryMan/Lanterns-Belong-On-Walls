@@ -3,17 +3,18 @@ package io.github.thepoultryman.walllanterns.block;
 import io.github.thepoultryman.walllanterns.WallLanterns;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 //? if > 1.21.1 {
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-//? }
+//? } else {
+/*import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.NbtUtils;
+*///? }
 
 public class CompatibilityLanternEntity extends BlockEntity {
     private BlockState mimickedLanternState;
@@ -41,7 +42,7 @@ public class CompatibilityLanternEntity extends BlockEntity {
 
     //? if > 1.21.1 {
     @Override
-    protected void saveAdditional(@NotNull ValueOutput output) {
+    protected void saveAdditional(@NonNull ValueOutput output) {
         if (this.mimickedLanternState != null) {
             output.store("mimicked_lantern_state", BlockState.CODEC, this.mimickedLanternState);
         }
@@ -59,7 +60,7 @@ public class CompatibilityLanternEntity extends BlockEntity {
 
     //? if > 1.21.1 {
     @Override
-    protected void loadAdditional(@NotNull ValueInput input) {
+    protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
         this.mimickedLanternState = input.read("mimicked_lantern_state", BlockState.CODEC)
                 .orElse(Blocks.LANTERN.defaultBlockState());
@@ -73,7 +74,7 @@ public class CompatibilityLanternEntity extends BlockEntity {
     *///? }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registryLookup) {
+    public @NonNull CompoundTag getUpdateTag(HolderLookup.@NonNull Provider registryLookup) {
         return this.saveWithoutMetadata(registryLookup);
     }
 }

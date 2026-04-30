@@ -3,6 +3,8 @@ package io.github.thepoultryman.walllanterns.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.thepoultryman.walllanterns.WallLanternOptions;
+//? if <= 1.21.1
+//import io.github.thepoultryman.walllanterns.BlockPropertiesDuck;
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,7 +12,6 @@ import net.minecraft.core.Vec3i;import net.minecraft.core.registries.BuiltInRegi
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -22,14 +23,16 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+import org.jspecify.annotations.NonNull;
 //? if > 1.21.1 {
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.ScheduledTickAccess;
-//? }
+//? } else {
+/*import net.minecraft.world.level.LevelAccessor;
+*///? }
+
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     public static final MapCodec<WallLanternBlock> CODEC =
@@ -56,7 +59,10 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     protected final WallLanternOptions options;
 
     public WallLanternBlock(Properties properties, Item blockItem, WallLanternOptions options) {
-        super(properties);
+        //? if > 1.21.1 {
+        super(properties.overrideLootTable(options.getLootTableOf()));
+        //? } else
+        //super(((BlockPropertiesDuck) properties).walllanterns$overrideLootTable(options.getLootTableOfNullable()));
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         this.blockItem = blockItem;
@@ -90,7 +96,7 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected boolean canSurvive(BlockState blockState, @NotNull LevelReader levelReader, BlockPos blockPos) {
+    protected boolean canSurvive(BlockState blockState, @NonNull LevelReader levelReader, BlockPos blockPos) {
         Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
         Vec3i offset = /*? if > 1.21.1 { */ facing.getOpposite().getUnitVec3i() /*?} else {*//*facing.getOpposite().getNormal()*//*?} */;
         return Block.canSupportCenter(levelReader, blockPos.offset(offset), facing);
@@ -98,13 +104,13 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
 
     //? if <= 1.21.1 {
     /*@Override
-    protected @NotNull BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2,
+    protected @NonNull BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2,
                                               LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
         return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
     }
     *///? } else {
     @Override
-    protected @NotNull BlockState updateShape(BlockState blockState, LevelReader levelReader,
+    protected @NonNull BlockState updateShape(BlockState blockState, LevelReader levelReader,
                                               ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction,
                                               BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (blockState.getValue(BlockStateProperties.WATERLOGGED)) {
@@ -134,7 +140,7 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    protected @NonNull VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return switch (blockState.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
             case EAST -> onWallShapeEast;
             case SOUTH -> onWallShapeSouth;
@@ -144,12 +150,12 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public @NotNull Item asItem() {
+    public @NonNull Item asItem() {
         return this.blockItem;
     }
 
     @Override
-    protected @NotNull MapCodec<? extends Block> codec() {
+    protected @NonNull MapCodec<? extends Block> codec() {
         return CODEC;
     }
 }

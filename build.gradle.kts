@@ -15,6 +15,17 @@ val minecraft = if (property("deps.minecraft")?.equals("latest") == true) {
 } else {
     property("deps.minecraft") as String
 }
+
+sourceSets {
+    main {
+        resources {
+            if (minecraft == "1.21.1") {
+                srcDir("./src/main/1_21_1_resources")
+            }
+        }
+    }
+}
+
 modstitch {
     minecraftVersion = minecraft
 
@@ -100,7 +111,14 @@ modstitch {
         addMixinsToModManifest = true
 
         configs.register("walllanterns")
+        if (minecraftVersion.get().equals("1.21.1")) {
+            configs.register("1_21_1_walllanterns")
+        }
     }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 // Stonecutter constants for mod loaders.
@@ -113,6 +131,8 @@ stonecutter {
         string {
             direction = eval(current.version, ">=1.21.11")
             replace("ResourceLocation", "Identifier")
+            replace("import org.jetbrains.annotations.NotNull;", "import org.jspecify.annotations.NonNull;")
+            replace("@NotNull", "@NonNull")
         }
         string {
             direction = eval(current.version, ">= 1.21.9")

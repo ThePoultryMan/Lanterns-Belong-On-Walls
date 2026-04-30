@@ -1,0 +1,15 @@
+{
+  "values": [
+    "walllanterns:compatibility_lantern",
+    "walllanterns:wall_copper_lantern",
+    "walllanterns:wall_exposed_copper_lantern",
+    "walllanterns:wall_lantern",
+    "walllanterns:wall_oxidized_copper_lantern",
+    "walllanterns:wall_soul_lantern",
+    "walllanterns:wall_waxed_copper_lantern",
+    "walllanterns:wall_waxed_exposed_copper_lantern",
+    "walllanterns:wall_waxed_oxidized_copper_lantern",
+    "walllanterns:wall_waxed_weathered_copper_lantern",
+    "walllanterns:wall_weathered_copper_lantern"
+  ]
+}

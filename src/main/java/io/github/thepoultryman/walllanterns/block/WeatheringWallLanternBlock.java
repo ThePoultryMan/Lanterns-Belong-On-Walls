@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class WeatheringWallLanternBlock extends WallLanternBlock implements WeatheringCopper {
     public static final MapCodec<WeatheringWallLanternBlock> CODEC =
@@ -43,7 +43,7 @@ public class WeatheringWallLanternBlock extends WallLanternBlock implements Weat
     }
 
     @Override
-    protected void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void randomTick(@NonNull BlockState state, @NonNull ServerLevel level, @NonNull BlockPos pos, @NonNull RandomSource random) {
         this.changeOverTime(state, level, pos, random);
     }
 
@@ -58,7 +58,7 @@ public class WeatheringWallLanternBlock extends WallLanternBlock implements Weat
     }
 
     @Override
-    protected @NotNull MapCodec<? extends Block> codec() {
+    protected @NonNull MapCodec<? extends Block> codec() {
         return CODEC;
     }
 }

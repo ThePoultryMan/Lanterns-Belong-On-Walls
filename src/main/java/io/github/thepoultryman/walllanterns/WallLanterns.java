@@ -9,11 +9,12 @@ import io.github.thepoultryman.walllanterns.neoforge.WallLanternsEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,31 +29,32 @@ public final class WallLanterns {
             "compatibility_lantern"
     );
     public static RegistryHolder<CompatibilityWallLantern> COMPATIBILITY_WALL_LANTERN;
-    public static RegistryHolder<BlockEntityType<@NotNull CompatibilityLanternEntity>> LANTERN_ENTITY_TYPE;
+    public static RegistryHolder<BlockEntityType<@NonNull CompatibilityLanternEntity>> LANTERN_ENTITY_TYPE;
 
     public static void addVanillaLanterns(/*? if neoforge { */WallLanternsEvent/*? } else {*//*WallLanternsRegistry*//*?}*/ event) {
-        for (Item lantern : new Item[]{Items.LANTERN, Items.SOUL_LANTERN}) {
+        for (BlockItem lantern : new BlockItem[]{(BlockItem) Items.LANTERN, (BlockItem) Items.SOUL_LANTERN}) {
             Identifier lanternId = BuiltInRegistries.ITEM.getKey(lantern);
             event.addLantern(new WallLantern(
                     WallLanternOptions
                             .create()
                             .cutout()
-                            .lanternModel(lanternId.withPrefix("block/")),
+                            .lanternModel(lanternId.withPrefix("block/"))
+                            .lootTableOf(lantern.getBlock().getLootTable()),
                     lanternId,
                     lantern
             ));
         }
 
         //? if >= 1.21.9 {
-        List<Tuple<Item, Optional<Item>>> copperLanterns = List.of(
-                new Tuple<>(Items.COPPER_LANTERN.unaffected(), Optional.empty()),
-                new Tuple<>(Items.COPPER_LANTERN.exposed(), Optional.empty()),
-                new Tuple<>(Items.COPPER_LANTERN.weathered(), Optional.empty()),
-                new Tuple<>(Items.COPPER_LANTERN.oxidized(), Optional.empty()),
-                new Tuple<>(Items.COPPER_LANTERN.waxed(), Optional.of(Items.COPPER_LANTERN.unaffected())),
-                new Tuple<>(Items.COPPER_LANTERN.waxedExposed(), Optional.of(Items.COPPER_LANTERN.exposed())),
-                new Tuple<>(Items.COPPER_LANTERN.waxedWeathered(), Optional.of(Items.COPPER_LANTERN.weathered())),
-                new Tuple<>(Items.COPPER_LANTERN.waxedOxidized(), Optional.of(Items.COPPER_LANTERN.oxidized()))
+        List<Tuple<BlockItem, Optional<Item>>> copperLanterns = List.of(
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.unaffected(), Optional.empty()),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.exposed(), Optional.empty()),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.weathered(), Optional.empty()),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.oxidized(), Optional.empty()),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.waxed(), Optional.of(Items.COPPER_LANTERN.unaffected())),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.waxedExposed(), Optional.of(Items.COPPER_LANTERN.exposed())),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.waxedWeathered(), Optional.of(Items.COPPER_LANTERN.weathered())),
+                new Tuple<>((BlockItem) Items.COPPER_LANTERN.waxedOxidized(), Optional.of(Items.COPPER_LANTERN.oxidized()))
         );
 
         for (int i = 0; i < copperLanterns.size(); i++) {
@@ -62,13 +64,14 @@ public final class WallLanterns {
                 copperStateString = "";
             }
 
-            Tuple<Item, Optional<Item>> lantern = copperLanterns.get(i);
+            Tuple<BlockItem, Optional<Item>> lantern = copperLanterns.get(i);
             WallLanternOptions options = WallLanternOptions
                     .create()
                     .cutout()
                     .weatheringState(copperState)
                     .lanternModel(BuiltInRegistries.ITEM.getKey(lantern.getB().orElse(lantern.getA()))
-                            .withPrefix("block/"));
+                            .withPrefix("block/"))
+                    .lootTableOf(lantern.getA().getBlock().getLootTable());
             event.addLantern(new WallLantern(
                     options.lanternHolderModel(Identifier.fromNamespaceAndPath(
                             WallLanterns.MOD_ID,
