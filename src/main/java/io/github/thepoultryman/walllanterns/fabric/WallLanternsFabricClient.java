@@ -7,8 +7,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+//? if > 1.21.1 {
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+//? } else {
+/^import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.minecraft.client.renderer.RenderType;
+^///? }
 
 @Environment(EnvType.CLIENT)
 public class WallLanternsFabricClient implements ClientModInitializer {
@@ -18,7 +23,17 @@ public class WallLanternsFabricClient implements ClientModInitializer {
         WallLanterns.LANTERN_WRAPPERS.forEach(
                 (identifier, wallLanternWrapper) -> {
                     if (wallLanternWrapper.options().isCutoutLayer()) {
-                        BlockRenderLayerMap.putBlock(wallLanternWrapper.getWallLantern(), ChunkSectionLayer.CUTOUT);
+                        //? if > 1.21.1 {
+                         BlockRenderLayerMap
+                        //? } else
+                        //BlockRenderLayerMap.INSTANCE
+                                .putBlock(
+                                        wallLanternWrapper.getWallLantern(),
+                                        //? if > 1.21.1 {
+                                        ChunkSectionLayer.CUTOUT
+                                        //? } else
+                                        //RenderType.cutout()
+                                );
                     }
                 }
         );

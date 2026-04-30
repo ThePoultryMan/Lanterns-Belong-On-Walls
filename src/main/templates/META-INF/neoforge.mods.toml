@@ -23,11 +23,6 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[${min_minecraft_version},${minecraft_upper_bound})"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "advanced_runtime_resource_packs_but_different"
-type = "required"
-versionRange = "[${arrp_but_different_version},)"

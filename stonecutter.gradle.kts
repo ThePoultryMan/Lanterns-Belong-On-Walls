@@ -8,3 +8,9 @@ tasks.register("runActiveVersion") {
         dependsOn(":${stonecutter.current?.project}:runClient")
     }
 }
+
+tasks.register("dataGen") {
+    stonecutter.vcsVersion.run {
+        dependsOn(":${stonecutter.vcsVersion.project}:data")
+    }
+}

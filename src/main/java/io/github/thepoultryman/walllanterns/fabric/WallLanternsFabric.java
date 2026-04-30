@@ -1,7 +1,6 @@
 //? if fabric {
 /*package io.github.thepoultryman.walllanterns.fabric;
 
-import io.github.thepoultryman.arrp_but_different.fabric.ARRPEvent;
 import io.github.thepoultryman.walllanterns.RegistryHolder;
 import io.github.thepoultryman.walllanterns.WallLanternOptions;
 import io.github.thepoultryman.walllanterns.WallLanternWrapper;
@@ -32,7 +31,9 @@ public final class WallLanternsFabric implements ModInitializer {
     public void onInitialize() {
         CompatibilityWallLantern lantern = Registry.register(BuiltInRegistries.BLOCK, WallLanterns.COMPAT_LANTERN_ID,
                 new CompatibilityWallLantern(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                        .setId(ResourceKey.create(Registries.BLOCK, WallLanterns.COMPAT_LANTERN_ID)),
+                        //? if > 1.21.1
+                        .setId(ResourceKey.create(Registries.BLOCK, WallLanterns.COMPAT_LANTERN_ID))
+                        ,
                         WallLanternOptions.create()
                 )
         );
@@ -50,17 +51,23 @@ public final class WallLanternsFabric implements ModInitializer {
         FabricLoader.getInstance().getEntrypoints(WallLanterns.MOD_ID, WallLanternsEntrypoint.class)
                 .forEach((entrypoint) -> entrypoint.registerLanterns(wallLanternsRegistry));
         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
-            Identifier lanternLocation = WallLanterns.dynamicIdentifier(wallLantern.identifier());
+            Identifier lanternLocation = WallLanterns.wallId(wallLantern.identifier().getPath());
             WallLanternBlock block;
             if (wallLantern.options().getWeatheringState() == null) {
                  block = new WallLanternBlock(
-                        Blocks.LANTERN.properties().setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                        Blocks.LANTERN.properties()
+                                //? if > 1.21.1
+                                .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                        ,
                         wallLantern.blockItem(),
                         wallLantern.options()
                 );
             } else {
                 block = new WeatheringWallLanternBlock(
-                        Blocks.LANTERN.properties().setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                        Blocks.LANTERN.properties()
+                                //? if > 1.21.1
+                                .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                        ,
                         wallLantern.blockItem(),
                         wallLantern.options(),
                         wallLantern.options().getWeatheringState()
@@ -80,23 +87,20 @@ public final class WallLanternsFabric implements ModInitializer {
                 "oxidized_copper_lantern",
         };
         for (int i = 0; i < baseCopperLanternIds.length - 1; i++) {
-            Optional<Block> maybeLess = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(baseCopperLanternIds[i]));
-            Optional<Block> maybeMore = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(baseCopperLanternIds[i + 1]));
+            Optional<Block> maybeLess = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(baseCopperLanternIds[i]));
+            Optional<Block> maybeMore = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(baseCopperLanternIds[i + 1]));
             if (maybeLess.isPresent() && maybeMore.isPresent()) {
                 OxidizableBlocksRegistry.registerOxidizableBlockPair(maybeLess.get(), maybeMore.get());
-                System.out.println("PEEPEE: " + maybeLess + " " + maybeMore);
             }
         }
         // waxing
         for (String copperLanternId : baseCopperLanternIds) {
-            Optional<Block> maybeUnwaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier(copperLanternId));
-            Optional<Block> maybeWaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.dynamicIdentifier("waxed_" + copperLanternId));
+            Optional<Block> maybeUnwaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId(copperLanternId));
+            Optional<Block> maybeWaxed = BuiltInRegistries.BLOCK.getOptional(WallLanterns.wallId("waxed_" + copperLanternId));
             if (maybeUnwaxed.isPresent() && maybeWaxed.isPresent()) {
                 OxidizableBlocksRegistry.registerWaxableBlockPair(maybeUnwaxed.get(), maybeWaxed.get());
             }
         }
-
-        ARRPEvent.BEFORE_USER.register(resources -> resources.add(WallLanterns.createRuntimePack()));
     }
 }
 *///?}

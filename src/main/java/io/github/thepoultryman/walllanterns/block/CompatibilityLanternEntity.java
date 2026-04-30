@@ -3,13 +3,17 @@ package io.github.thepoultryman.walllanterns.block;
 import io.github.thepoultryman.walllanterns.WallLanterns;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+//? if > 1.21.1 {
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+//? }
 
 public class CompatibilityLanternEntity extends BlockEntity {
     private BlockState mimickedLanternState;
@@ -35,6 +39,7 @@ public class CompatibilityLanternEntity extends BlockEntity {
         this.forceLanternUpdate = force;
     }
 
+    //? if > 1.21.1 {
     @Override
     protected void saveAdditional(@NotNull ValueOutput output) {
         if (this.mimickedLanternState != null) {
@@ -42,13 +47,30 @@ public class CompatibilityLanternEntity extends BlockEntity {
         }
         super.saveAdditional(output);
     }
+    //? } else {
+    /*@Override
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        if (this.mimickedLanternState != null) {
+            compoundTag.put("mimicked_lantern_state", NbtUtils.writeBlockState(this.mimickedLanternState));
+        }
+        super.saveAdditional(compoundTag, provider);
+    }
+    *///? }
 
+    //? if > 1.21.1 {
     @Override
     protected void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         this.mimickedLanternState = input.read("mimicked_lantern_state", BlockState.CODEC)
                 .orElse(Blocks.LANTERN.defaultBlockState());
     }
+    //? } else {
+    /*@Override
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
+        this.mimickedLanternState = NbtUtils.readBlockState(provider.lookupOrThrow(Registries.BLOCK), compoundTag);
+    }
+    *///? }
 
     @Override
     public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registryLookup) {

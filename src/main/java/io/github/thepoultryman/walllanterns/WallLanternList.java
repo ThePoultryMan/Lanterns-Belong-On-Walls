@@ -10,12 +10,7 @@ public class WallLanternList {
     private final List<WallLantern> list = new ArrayList<>();
 
     public boolean hasLantern(Identifier resourceLocation) {
-        for (WallLantern wallLantern : list) {
-            if (wallLantern.identifier().equals(resourceLocation)) {
-                return true;
-            }
-        }
-        return false;
+        return list.stream().anyMatch((lantern) -> lantern.identifier().equals(resourceLocation));
     }
 
     public void add(WallLantern wallLantern) {

@@ -1,16 +1,23 @@
 package io.github.thepoultryman.walllanterns.block;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+//? if <= 1.21.1
+//import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+//? if >= 1.21.9 {
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+//? }
 
 import java.util.List;
-
-public class CompatibilityLanternState extends BlockEntityRenderState {
+public class CompatibilityLanternState /*? if >= 1.21.9 { */extends BlockEntityRenderState/*? }*/ {
     private BlockState mimickedLanternState;
+    //? if > 1.21.1 {
     private List<BlockModelPart> modelParts;
+    //? } else
+    //private BakedModel bakedModel;
+    //? if >= 1.21.9
     private ModelFeatureRenderer.CrumblingOverlay overlayTexture;
     private Level level;
 
@@ -22,6 +29,7 @@ public class CompatibilityLanternState extends BlockEntityRenderState {
         this.mimickedLanternState = mimickedLanternState;
     }
 
+    //? if > 1.21.1 {
     public List<BlockModelPart> getModelParts() {
         return this.modelParts;
     }
@@ -29,7 +37,17 @@ public class CompatibilityLanternState extends BlockEntityRenderState {
     public void setModelParts(List<BlockModelPart> modelParts) {
         this.modelParts = modelParts;
     }
+    //? } else {
+    /*public BakedModel getBakedModel() {
+        return this.bakedModel;
+    }
 
+    public void setBakedModel(BakedModel bakedModel) {
+        this.bakedModel = bakedModel;
+    }
+    *///? }
+
+    //? if >= 1.21.9 {
     public ModelFeatureRenderer.CrumblingOverlay getOverlayTexture() {
         return this.overlayTexture;
     }
@@ -37,6 +55,7 @@ public class CompatibilityLanternState extends BlockEntityRenderState {
     public void setOverlayTexture(ModelFeatureRenderer.CrumblingOverlay overlayTexture) {
         this.overlayTexture = overlayTexture;
     }
+    //? }
 
     public Level getLevel() {
         return this.level;

@@ -1,8 +1,6 @@
 //? if neoforge {
 package io.github.thepoultryman.walllanterns.neoforge;
 
-import io.github.thepoultryman.arrp_but_different.neoforge.ARRPForNeoForge;
-import io.github.thepoultryman.arrp_but_different.neoforge.ARRPNeoForgeEvent;
 import io.github.thepoultryman.walllanterns.RegistryHolder;
 import io.github.thepoultryman.walllanterns.WallLanternOptions;
 import io.github.thepoultryman.walllanterns.WallLanternWrapper;
@@ -12,7 +10,10 @@ import io.github.thepoultryman.walllanterns.block.CompatibilityWallLantern;
 import io.github.thepoultryman.walllanterns.block.WallLanternBlock;
 import io.github.thepoultryman.walllanterns.block.WeatheringWallLanternBlock;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+//? if > 1.21.1 {
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+ //? } else
+//import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -36,18 +37,27 @@ public final class WallLanternsNeoForge {
     public WallLanternsNeoForge(IEventBus modBus) {
         WallLanterns.LANTERN_ENTITY_TYPE = new RegistryHolder<>(
                 WallLanternsNeoForge.BLOCK_ENTITY_TYPES.register(WallLanterns.COMPAT_LANTERN_ID.getPath(),
+                        //? if > 1.21.1 {
                         () -> new BlockEntityType<>(CompatibilityLanternEntity::new,
                                 false, WallLanterns.COMPATIBILITY_WALL_LANTERN.get()
                         )
+                        //? } else {
+                        /*() -> BlockEntityType.Builder.of(CompatibilityLanternEntity::new,
+                                WallLanterns.COMPATIBILITY_WALL_LANTERN.get()
+                        ).build(null)
+                        *///? }
                 )
         );
         WallLanterns.COMPATIBILITY_WALL_LANTERN = new RegistryHolder<>(
                 WallLanternsNeoForge.BLOCKS.register(WallLanterns.COMPAT_LANTERN_ID.getPath(),
                         () -> new CompatibilityWallLantern(
                                 BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                //? if > 1.21.1 {
                                         .setId(ResourceKey.create(Registries.BLOCK,
                                                 WallLanterns.COMPAT_LANTERN_ID
-                                        )),
+                                        ))
+                                        //? }
+                                ,
                                 WallLanternOptions.create()
                         )
                 )
@@ -61,19 +71,25 @@ public final class WallLanternsNeoForge {
 
                 event.register(Registries.BLOCK, registry ->
                         WallLanterns.WALL_LANTERNS.forEach((wallLantern) -> {
-                            Identifier lanternLocation = WallLanterns.dynamicIdentifier(
-                                    wallLantern.identifier()
+                            Identifier lanternLocation = WallLanterns.wallId(
+                                    wallLantern.identifier().getPath()
                             );
                             WallLanternBlock block;
                             if (wallLantern.options().getWeatheringState() != null) {
-                                block = new WeatheringWallLanternBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                                block = new WeatheringWallLanternBlock(
+                                        BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                                        //? if > 1.21.1
+                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                                        ,
                                         wallLantern.blockItem(),
-                                        wallLantern.options());
+                                        wallLantern.options()
+                                );
                             } else {
                                 block = new WallLanternBlock(
                                         BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
-                                                .setId(ResourceKey.create(Registries.BLOCK, lanternLocation)),
+                                        //? if > 1.21.1
+                                        .setId(ResourceKey.create(Registries.BLOCK, lanternLocation))
+                                        ,
                                         wallLantern.blockItem(),
                                         wallLantern.options()
                                 );
@@ -90,9 +106,6 @@ public final class WallLanternsNeoForge {
                 );
             }
         });
-        ARRPForNeoForge.ARRP_EVENT_BUS.addListener((ARRPNeoForgeEvent.BeforeUser event) ->
-                event.addPack(WallLanterns.createRuntimePack())
-        );
         modBus.register(EventHandler.class);
     }
 
@@ -106,7 +119,12 @@ public final class WallLanternsNeoForge {
         private static void onClientSetup(FMLClientSetupEvent ignored) {
             WallLanterns.LANTERN_WRAPPERS.forEach((resourceLocation, wallLanternWrapper) -> {
                 if (wallLanternWrapper.options().isCutoutLayer()) {
-                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(), ChunkSectionLayer.CUTOUT);
+                    ItemBlockRenderTypes.setRenderLayer(wallLanternWrapper.getWallLantern(),
+                            //? if > 1.21.1 {
+                            ChunkSectionLayer.CUTOUT
+                             //? } else
+                            //RenderType.cutout()
+                    );
                 }
             });
         }

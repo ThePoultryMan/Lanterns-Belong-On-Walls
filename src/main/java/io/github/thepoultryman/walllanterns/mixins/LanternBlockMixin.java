@@ -1,5 +1,6 @@
 package io.github.thepoultryman.walllanterns.mixins;
 
+import io.github.thepoultryman.walllanterns.WallLantern;
 import io.github.thepoultryman.walllanterns.WallLanterns;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;

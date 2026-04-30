@@ -6,7 +6,8 @@
   "description": "${mod_description}",
   "authors": ["${mod_author}"],
   "contact": {
-    "homepage": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"  },
+    "homepage": "https://github.com/ThePoultryMan/Lanterns-Belong-On-Walls"
+  },
   "license": "MIT",
   "icon": "assets/walllanterns/icon.png",
   "environment": "*",
@@ -23,8 +24,7 @@
   },
   "depends": {
     "fabricloader": ">=0.18.4",
-    "minecraft": ">=${min_minecraft_version}${minecraft_upper_bound}",
-    "fabric-api": ">=${fabric_api_min_version}",
-    "advanced_runtime_resource_packs_but_different": ">=${arrp_but_different_version}"
+    "minecraft": "${minecraft_version_range}",
+    "fabric-api": ">=${fabric_api_min_version}"
   }
 }

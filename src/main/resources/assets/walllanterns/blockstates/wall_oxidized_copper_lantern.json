@@ -1,0 +1,60 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "OR": [
+          {
+            "facing": "north"
+          },
+          {
+            "facing": "south"
+          },
+          {
+            "facing": "east"
+          },
+          {
+            "facing": "west"
+          }
+        ]
+      },
+      "apply": {
+        "model": "minecraft:block/oxidized_copper_lantern"
+      }
+    },
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "walllanterns:block/oxidized_copper_wall_lantern_holder"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "walllanterns:block/oxidized_copper_wall_lantern_holder",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "walllanterns:block/oxidized_copper_wall_lantern_holder",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "walllanterns:block/oxidized_copper_wall_lantern_holder",
+        "y": 270
+      }
+    }
+  ]
+}

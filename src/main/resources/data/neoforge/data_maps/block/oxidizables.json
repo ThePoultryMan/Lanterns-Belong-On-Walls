@@ -1,13 +1,13 @@
 {
   "values": {
-    "walllanterns_dynamic:wall_copper_lantern": {
-      "next_oxidation_stage": "walllanterns_dynamic:wall_exposed_copper_lantern"
+    "walllanterns:wall_copper_lantern": {
+      "next_oxidation_stage": "walllanterns:wall_exposed_copper_lantern"
     },
-    "walllanterns_dynamic:wall_exposed_copper_lantern": {
-      "next_oxidation_stage": "walllanterns_dynamic:wall_weathered_copper_lantern"
+    "walllanterns:wall_exposed_copper_lantern": {
+      "next_oxidation_stage": "walllanterns:wall_weathered_copper_lantern"
     },
-    "walllanterns_dynamic:wall_weathered_copper_lantern": {
-      "next_oxidation_stage": "walllanterns_dynamic:wall_oxidized_copper_lantern"
+    "walllanterns:wall_weathered_copper_lantern": {
+      "next_oxidation_stage": "walllanterns:wall_oxidized_copper_lantern"
     }
   }
 }

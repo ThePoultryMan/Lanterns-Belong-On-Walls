@@ -6,15 +6,13 @@ import io.github.thepoultryman.walllanterns.WallLanternOptions;
 import io.github.thepoultryman.walllanterns.mixins.LanternBlockAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.RandomSource;
+import net.minecraft.core.Vec3i;import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -26,6 +24,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+//? if > 1.21.1 {
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.ScheduledTickAccess;
+//? }
 
 public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     public static final MapCodec<WallLanternBlock> CODEC =
@@ -86,11 +90,19 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+    protected boolean canSurvive(BlockState blockState, @NotNull LevelReader levelReader, BlockPos blockPos) {
         Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        return Block.canSupportCenter(levelReader, blockPos.offset(facing.getOpposite().getUnitVec3i()), facing);
+        Vec3i offset = /*? if > 1.21.1 { */ facing.getOpposite().getUnitVec3i() /*?} else {*//*facing.getOpposite().getNormal()*//*?} */;
+        return Block.canSupportCenter(levelReader, blockPos.offset(offset), facing);
     }
 
+    //? if <= 1.21.1 {
+    /*@Override
+    protected @NotNull BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2,
+                                              LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+    }
+    *///? } else {
     @Override
     protected @NotNull BlockState updateShape(BlockState blockState, LevelReader levelReader,
                                               ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction,
@@ -103,6 +115,7 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
                 blockPos.offset(blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite().getUnitVec3i())
         ).getBlock() == Blocks.AIR ? Blocks.AIR.defaultBlockState() : blockState;
     }
+    //? }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
@@ -136,7 +149,7 @@ public class WallLanternBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected MapCodec<? extends Block> codec() {
+    protected @NotNull MapCodec<? extends Block> codec() {
         return CODEC;
     }
 }

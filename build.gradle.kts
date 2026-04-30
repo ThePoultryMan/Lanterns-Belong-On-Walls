@@ -1,8 +1,8 @@
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
-    id("dev.isxander.modstitch.base") version "0.8.0"
-    id("me.modmuss50.mod-publish-plugin") version("1.1.0")
+    id("dev.isxander.modstitch.base") version "0.8.5"
+    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
 }
 
 fun prop(name: String, consumer: (prop: String) -> Unit) {
@@ -34,7 +34,7 @@ modstitch {
         modGroup = "io.github.thepoultryman"
         modAuthor = "ThePoultryMan"
 
-        fun <K: Any, V: Any> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
+        fun <K : Any, V : Any> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
             block()
         }
 
@@ -48,17 +48,31 @@ modstitch {
             prop("deps.min_fabric_api_version") {
                 put("fabric_api_min_version", it)
             }
-            put("min_minecraft_version", property("deps.minecraft_min") as String)
-            put("arrp_but_different_version", property("deps.arrp_but_different").toString().split('+')[0])
-            put("minecraft_upper_bound", if (property("deps.minecraft")?.equals("latest") == true) {
-                ""
-            } else {
-                if (modstitch.isLoom) {
-                    " <=$minecraftVersion"
+            put(
+                "minecraft_version_range",
+                // If a minimum version requirement exists
+                if (hasProperty("deps.minecraft_min")) {
+                    if (modstitch.isLoom) {
+                        ">=${property("deps.minecraft_min")}" + if (property("deps.minecraft")?.equals("latest") == true) {
+                            ""
+                        } else {
+                            "<= ${minecraftVersion.get()}"
+                        }
+                    } else {
+                        "[${property("deps.minecraft_min")}, " + if (property("deps.minecraft")?.equals("latest") == true) {
+                            ")"
+                        } else {
+                            "${minecraftVersion.get()}]"
+                        }
+                    }
                 } else {
-                    minecraftVersion.toString()
+                    if (modstitch.isLoom) {
+                        "${minecraftVersion.get()}"
+                    } else {
+                        "[${minecraftVersion.get()}]"
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -100,6 +114,10 @@ stonecutter {
             direction = eval(current.version, ">=1.21.11")
             replace("ResourceLocation", "Identifier")
         }
+        string {
+            direction = eval(current.version, ">= 1.21.9")
+            replace("getBlockRenderDispatcher", "blockRenderDispatcher")
+        }
     }
 }
 
@@ -119,12 +137,6 @@ dependencies {
         modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api_version")}")
         modstitchModApi("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
     }
-    modstitchModImplementation("maven.modrinth:arrp-but-different:${property("deps.arrp_but_different")}-${if (modstitch.isLoom) {
-        "fabric"
-    } else {
-        "neoforge"
-    }
-    }")
 }
 
 publishMods {
@@ -170,7 +182,6 @@ publishMods {
             minecraftVersions.add(minecraft)
         }
 
-        requires("arrp-but-different")
         if (modstitch.isLoom) {
             requires("fabric-api")
         }
@@ -189,7 +200,6 @@ publishMods {
             minecraftVersions.add(minecraft)
         }
 
-        requires("arrp-but-different")
         if (modstitch.isLoom) {
             requires("fabric-api")
         }

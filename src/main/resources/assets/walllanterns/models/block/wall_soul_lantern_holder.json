@@ -1,0 +1,6 @@
+{
+  "parent": "walllanterns:block/wall_lantern_holder_template",
+  "textures": {
+    "lantern_holder": "walllanterns:block/wall_lantern_holder"
+  }
+}
