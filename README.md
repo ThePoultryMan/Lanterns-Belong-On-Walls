@@ -1,3 +1,7 @@
+# MIGRATION
+
+[This project has moved to codeberg](https://codeberg.org/ThePoultryMan/Lanterns-Belong-On-Walls)
+
 ## How?
 
 For supported lanterns, place the lantern on the side of the block, and the lantern will attach to that side.
